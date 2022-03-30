@@ -1,28 +1,30 @@
 package app.scrumifiedbackend.service.implementation;
 
+import app.scrumifiedbackend.dto.StoryDto;
 import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.service.interface_service.StoryService;
 
 import java.util.List;
 
 public class StoryServiceImpl implements StoryService {
+
     @Override
-    public List<Story> findAll() {
+    public List<StoryDto> findAll() {
         return null;
     }
 
     @Override
-    public Story findOne(Long id) {
+    public StoryDto findOne(Long id) {
         return null;
     }
 
     @Override
-    public Story create(Story input) {
+    public StoryDto create(StoryDto input) {
         return null;
     }
 
     @Override
-    public Story update(Long id, Story input) {
+    public StoryDto update(Long id, StoryDto input) {
         return null;
     }
 

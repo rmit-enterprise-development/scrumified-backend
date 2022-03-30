@@ -29,11 +29,8 @@ public class UserController {
 
     @PostMapping("/register")
     public EntityModel<UserDto> createUser(@RequestBody UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
-//        User createdUser = userService.create(user);
-//        UserDto createdUserDto = modelMapper.map(createdUser, UserDto.class);
-//        return userDtoEntityAssembler.toModel(createdUserDto);
-        return null;
+        UserDto createdUser = userService.create(userDto);
+        return userDtoEntityAssembler.toModel(createdUser);
     }
 
     @GetMapping("/login")

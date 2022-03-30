@@ -1,28 +1,30 @@
 package app.scrumifiedbackend.service.implementation;
 
+import app.scrumifiedbackend.dto.UserProjectDto;
 import app.scrumifiedbackend.entity.UserProject;
 import app.scrumifiedbackend.service.interface_service.UserProjectService;
 
 import java.util.List;
 
 public class UserProjectServiceImpl implements UserProjectService {
+
     @Override
-    public List<UserProject> findAll() {
+    public List<UserProjectDto> findAll() {
         return null;
     }
 
     @Override
-    public UserProject findOne(Long id) {
+    public UserProjectDto findOne(Long id) {
         return null;
     }
 
     @Override
-    public UserProject create(UserProject input) {
+    public UserProjectDto create(UserProjectDto input) {
         return null;
     }
 
     @Override
-    public UserProject update(Long id, UserProject input) {
+    public UserProjectDto update(Long id, UserProjectDto input) {
         return null;
     }
 
