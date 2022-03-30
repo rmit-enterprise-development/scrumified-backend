@@ -1,5 +1,7 @@
 package app.scrumifiedbackend.dto;
 
+import app.scrumifiedbackend.entity.User;
+import app.scrumifiedbackend.entity.UserProject;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
