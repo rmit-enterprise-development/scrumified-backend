@@ -1,28 +1,30 @@
 package app.scrumifiedbackend.service.implementation;
 
+import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.entity.Sprint;
 import app.scrumifiedbackend.service.interface_service.SprintService;
 
 import java.util.List;
 
 public class SprintServiceImpl implements SprintService {
+
     @Override
-    public List<Sprint> findAll() {
+    public List<SprintDto> findAll() {
         return null;
     }
 
     @Override
-    public Sprint findOne(Long id) {
+    public SprintDto findOne(Long id) {
         return null;
     }
 
     @Override
-    public Sprint create(Sprint input) {
+    public SprintDto create(SprintDto input) {
         return null;
     }
 
     @Override
-    public Sprint update(Long id, Sprint input) {
+    public SprintDto update(Long id, SprintDto input) {
         return null;
     }
 
