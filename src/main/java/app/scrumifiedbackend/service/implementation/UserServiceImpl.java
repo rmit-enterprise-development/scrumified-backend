@@ -42,7 +42,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(Long id, UserDto input) {
-        return null;
+        User user = userRepo.getById(id);
+        if (input.getFirstName() != null && !input.getFirstName().equals(user.getFirstName())) {
+            user.setFirstName(input.getFirstName());
+        }
+
+        if (input.getLastName() != null && !input.getLastName().equals(user.getLastName())) {
+            user.setLastName(input.getLastName());
+        }
+
+        if (input.getEmail() != null && !input.getEmail().equals(user.getEmail())) {
+            user.setEmail(input.getEmail());
+        }
+
+        if (input.getPassword() != null && !input.getPassword().equals(user.getPassword())) {
+            user.setPassword(input.getPassword());
+        }
+        
+        userRepo.save(user);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override

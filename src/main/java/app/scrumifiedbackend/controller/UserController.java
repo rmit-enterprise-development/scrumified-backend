@@ -46,14 +46,11 @@ public class UserController {
         }
         return userDtoEntityAssembler.toModel(userDto);
     }
-    
+
     @PutMapping("/users/{userId}")
     public EntityModel<UserDto> updateUser(@PathVariable("userId") Long id, @RequestBody UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
-//        User updatedUser = userService.update(id, user);
-//        UserDto updateUserDto = modelMapper.map(updatedUser, UserDto.class);
-//        return userDtoEntityAssembler.toModel(updateUserDto);
-        return null;
+        UserDto updateUser = userService.update(id, userDto);
+        return userDtoEntityAssembler.toModel(updateUser);
     }
 
     @DeleteMapping("/users/{userId}")
