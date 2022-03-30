@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -35,9 +36,17 @@ public class UserController {
 
     @GetMapping("/login")
     public EntityModel<UserDto> authenticateUser(@RequestBody UserDto userDto) {
-        return null;
+        Map<String, Boolean> map = userService.isValidUser(userDto.getEmail(), userDto.getPassword());
+        userDto.setIsSuccess(true);
+        for (String s : map.keySet()) {
+            if (!map.get(s)) {
+                userDto.setIsSuccess(false);
+                userDto.addErrorTarget(s);
+            }
+        }
+        return userDtoEntityAssembler.toModel(userDto);
     }
-
+    
     @PutMapping("/users/{userId}")
     public EntityModel<UserDto> updateUser(@PathVariable("userId") Long id, @RequestBody UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);

@@ -3,9 +3,11 @@ package app.scrumifiedbackend.service.implementation;
 import app.scrumifiedbackend.dto.StoryDto;
 import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.service.interface_service.StoryService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class StoryServiceImpl implements StoryService {
 
     @Override

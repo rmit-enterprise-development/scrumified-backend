@@ -3,9 +3,11 @@ package app.scrumifiedbackend.service.implementation;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ProjectServiceImpl implements ProjectService {
 
     @Override

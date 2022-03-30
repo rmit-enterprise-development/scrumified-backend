@@ -3,9 +3,11 @@ package app.scrumifiedbackend.service.implementation;
 import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.entity.Sprint;
 import app.scrumifiedbackend.service.interface_service.SprintService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class SprintServiceImpl implements SprintService {
 
     @Override
