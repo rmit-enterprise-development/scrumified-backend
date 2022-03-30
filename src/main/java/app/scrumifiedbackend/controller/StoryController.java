@@ -1,5 +1,6 @@
 package app.scrumifiedbackend.controller;
 
+import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.StoryDto;
 import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.StoryService;
@@ -10,6 +11,7 @@ public class StoryController {
 
     private StoryService storyService;
     private StoryRepo storyRepo;
+    private StoryDtoEntityAssembler storyDtoEntityAssembler;
 
     @DeleteMapping("/stories/{storyId}")
     public void deleteStory (@PathVariable("storyId") Long id) {
@@ -19,8 +21,7 @@ public class StoryController {
     @GetMapping("/stories/{storyId}")
     public EntityModel<StoryDto> getStory (@PathVariable("storyId") Long id) {
         StoryDto storyDto = storyService.findOne(id);
-        // Assembler include!
-        return null;
+        return storyDtoEntityAssembler.toModel(storyDto);
     }
 
     /*
@@ -34,8 +35,7 @@ public class StoryController {
             updateStoryDto = storyService.update(id, storyDto);
         }
 
-        // Assembler include!
-        return null;
+        return storyDtoEntityAssembler.toModel(updateStoryDto);
     }
 
 

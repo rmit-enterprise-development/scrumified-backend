@@ -2,6 +2,7 @@ package app.scrumifiedbackend.assembler;
 
 import app.scrumifiedbackend.controller.StoryController;
 import app.scrumifiedbackend.dto.StoryDto;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,16 @@ public class StoryDtoEntityAssembler implements RepresentationModelAssembler<Sto
 
     @Override
     public EntityModel<StoryDto> toModel (StoryDto entity) {
-//        return EntityModel.of(entity,
-//                linkTo(methodOn(StoryController.class).getStory(entity.getId())).withSelfRel().andAffordance(
-//                        Arrays.asList(
-//                                afford(methodOn(StoryController.class).updateStory(entity.getId(), entity))
-//                        )
-//                ));
-        return null;
+        Long id = entity.getId();
+        return EntityModel.of(entity,
+                linkTo(methodOn(StoryController.class).getStory(id)).withSelfRel(),
+                linkTo(methodOn(StoryController.class).updateStory(id, null)).withRel("stories")
+        );
+    }
+
+    @Override
+    public CollectionModel<EntityModel<StoryDto>> toCollectionModel (Iterable<? extends StoryDto> entities) {
+        return RepresentationModelAssembler.super.toCollectionModel(entities);
     }
 
 
