@@ -2,6 +2,7 @@ package app.scrumifiedbackend.service.implementation;
 
 import app.scrumifiedbackend.dto.UserDto;
 import app.scrumifiedbackend.entity.User;
+import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.UserRepo;
 import app.scrumifiedbackend.service.interface_service.UserService;
@@ -32,17 +33,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto input) {
         User user = modelMapper.map(input, User.class);
-        try {
-            userRepo.save(user);
-            return input;
-        } catch (RuntimeException e) {
-            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
-        }
+        user = save(user);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto update(Long id, UserDto input) {
-        User user = userRepo.getById(id);
+        User user = getById(id);
+
         if (input.getFirstName() != null && !input.getFirstName().equals(user.getFirstName())) {
             user.setFirstName(input.getFirstName());
         }
@@ -58,13 +56,14 @@ public class UserServiceImpl implements UserService {
         if (input.getPassword() != null && !input.getPassword().equals(user.getPassword())) {
             user.setPassword(input.getPassword());
         }
-        
-        userRepo.save(user);
+
+        user = save(user);
         return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public void delete(Long id) {
+        User user = getById(id);
 
     }
 
@@ -87,5 +86,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAllExceptOne(Long id) {
         return null;
+    }
+
+    private User getById(Long id) {
+        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ID " + id + " not exist"));
+    }
+
+    private User save(User user) {
+        try {
+            return userRepo.save(user);
+        } catch (RuntimeException e) {
+            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
+        }
     }
 }

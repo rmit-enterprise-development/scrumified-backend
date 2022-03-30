@@ -22,7 +22,6 @@ import java.util.Map;
 @CrossOrigin
 @AllArgsConstructor
 public class UserController {
-    private ModelMapper modelMapper;
     private UserService userService;
     private ProjectService projectService;
 
@@ -54,7 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{userId}")
-    public void deleteUser(@PathVariable("UserId") Long id) {
+    public void deleteUser(@PathVariable("userId") Long id) {
         userService.delete(id);
     }
 
