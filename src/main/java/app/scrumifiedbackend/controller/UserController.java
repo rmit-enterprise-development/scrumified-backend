@@ -59,26 +59,12 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public EntityModel<UserDto> getUser(@PathVariable("userId") Long id) {
-//        User user = userService.findOne(id);
-//        UserDto userDto = modelMapper.map(user, UserDto.class);
-//        return userDtoEntityAssembler.toModel(userDto);
-        return null;
+        return userDtoEntityAssembler.toModel(userService.findOne(id));
     }
 
     @GetMapping("/users")
     public CollectionModel<EntityModel<UserDto>> getAllUsers(@RequestParam(name = "exceptedId", required = false) Long id) {
-        List<User> users;
-        if (id == null) {
-//            users = userService.findAll();
-        } else {
-//            users = userService.findAllExceptOne(id);
-        }
-
-        List<UserDto> userDtoList = new ArrayList<>();
-//        for (User user : users) {
-//            userDtoList.add(modelMapper.map(user, UserDto.class));
-//        }
-
+        List<UserDto> userDtoList = id == null ? userService.findAll() : userService.findAllExceptOne(id);
         return userDtoEntityAssembler.toCollectionModel(userDtoList);
     }
 

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        return null;
+        List<User> users = getAll();
+        return convertToDto(users);
     }
 
     @Override
     public UserDto findOne(Long id) {
-        return null;
+        User user = getById(id);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         User user = getById(id);
-
+        userRepo.delete(user);
     }
 
     @Override
@@ -85,11 +88,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllExceptOne(Long id) {
-        return null;
+        List<User> users = userRepo.findAllExceptOne(id);
+        return convertToDto(users);
     }
 
     private User getById(Long id) {
         return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ID " + id + " not exist"));
+    }
+
+    private List<User> getAll() {
+        return userRepo.findAll();
     }
 
     private User save(User user) {
@@ -98,5 +106,13 @@ public class UserServiceImpl implements UserService {
         } catch (RuntimeException e) {
             throw new EntityNotSaveException(e.getCause().getCause().getMessage());
         }
+    }
+
+    private List<UserDto> convertToDto(List<User> users) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : users) {
+            userDtoList.add(modelMapper.map(user, UserDto.class));
+        }
+        return userDtoList;
     }
 }
