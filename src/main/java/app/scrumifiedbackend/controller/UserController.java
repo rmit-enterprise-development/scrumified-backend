@@ -3,17 +3,13 @@ package app.scrumifiedbackend.controller;
 import app.scrumifiedbackend.assembler.UserDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.UserDto;
-import app.scrumifiedbackend.entity.Project;
-import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
 import app.scrumifiedbackend.service.interface_service.UserService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
