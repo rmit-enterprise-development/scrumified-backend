@@ -1,6 +1,8 @@
 package app.scrumifiedbackend.service.implementation;
 
 import app.scrumifiedbackend.dto.UserDto;
+import app.scrumifiedbackend.dto.UserProjectDto;
+import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
@@ -90,6 +92,17 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> findAllExceptOne(Long id) {
         List<User> users = userRepo.findAllExceptOne(id);
         return convertToDto(users);
+    }
+
+    @Override
+    public UserProjectDto findAllProjectBelongTo(Long id) {
+        User user = userRepo.getById(id);
+        List<Project> ownedProject = user.getOwnedProjects();
+        List<Project> participateProject = user.getParticipatedProjects();
+        UserProjectDto userProjectDto = new UserProjectDto();
+        userProjectDto.setOwnedProjects(ownedProject);
+        userProjectDto.setParticipatedProjects(participateProject);
+        return userProjectDto;
     }
 
     private User getById(Long id) {

@@ -2,10 +2,11 @@ package app.scrumifiedbackend.controller;
 
 import app.scrumifiedbackend.assembler.ProjectDtoEntityAssembler;
 import app.scrumifiedbackend.assembler.UserDtoEntityAssembler;
+import app.scrumifiedbackend.assembler.UserProjectDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.UserDto;
+import app.scrumifiedbackend.dto.UserProjectDto;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
-import app.scrumifiedbackend.service.interface_service.UserProjectService;
 import app.scrumifiedbackend.service.interface_service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -25,6 +26,7 @@ public class UserController {
 
     private UserDtoEntityAssembler userDtoEntityAssembler;
     private ProjectDtoEntityAssembler projectDtoEntityAssembler;
+    private UserProjectDtoEntityAssembler userProjectDtoEntityAssembler;
 
     @PostMapping("/register")
     public EntityModel<UserDto> createUser(@RequestBody UserDto userDto) {
@@ -75,8 +77,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/projects")
-    public EntityModel<UserDto> getAllProject(@PathVariable("userId") Long id) {
-//        UserDto userDto =
-        return null;
+    public EntityModel<UserProjectDto> getAllProjectBelongToUser(@PathVariable("userId") Long id) {
+        UserProjectDto userProjectDto = userService.findAllProjectBelongTo(id);
+        return userProjectDtoEntityAssembler.toModel(userProjectDto);
     }
 }

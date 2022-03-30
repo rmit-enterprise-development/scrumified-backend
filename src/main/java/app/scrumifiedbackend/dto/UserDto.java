@@ -27,7 +27,4 @@ public class UserDto {
     private String lastName;
     private String email;
     private String password;
-
-    private List<Project> ownedProjects;
-    private List<Project> participatedProjects;
 }
