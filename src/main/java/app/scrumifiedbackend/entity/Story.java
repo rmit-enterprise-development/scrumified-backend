@@ -33,4 +33,9 @@ public class Story {
     @JoinColumn(name = "project")
     @JsonBackReference
     private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee")
+    @JsonBackReference
+    private User assignee;
 }
