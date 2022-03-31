@@ -3,9 +3,11 @@ package app.scrumifiedbackend.service.implementation;
 import app.scrumifiedbackend.dto.UserDto;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.service.interface_service.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAll() {
