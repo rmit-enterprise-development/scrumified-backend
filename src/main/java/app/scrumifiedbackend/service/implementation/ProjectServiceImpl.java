@@ -5,6 +5,7 @@ import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.entity.UserProject;
 import app.scrumifiedbackend.entity.UserProjectKey;
+import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.UserProjectRepo;
 import app.scrumifiedbackend.repository.UserRepo;
@@ -31,7 +32,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto findOne(Long id) {
-        return null;
+        Project project = getById(id);
+        return modelMapper.map(project, ProjectDto.class);
     }
 
     @Override
@@ -53,13 +55,32 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto update(Long id, ProjectDto input) {
-        return null;
+        Project project = getById(id);
+
+        if (input.getTitle() != null && !input.getTitle().equals(project.getTitle())) {
+            project.setTitle(input.getTitle());
+        }
+
+        project = save(project);
+        return modelMapper.map(project, ProjectDto.class);
     }
 
     @Override
     public void delete(Long id) {
-
+        Project project = getById(id);
+        projectRepo.delete(project);
     }
 
+    private Project getById(Long id) {
+        return projectRepo.getById(id);
+    }
+
+    private Project save(Project project) {
+        try {
+            return projectRepo.save(project);
+        } catch (RuntimeException e) {
+            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
+        }
+    }
 
 }

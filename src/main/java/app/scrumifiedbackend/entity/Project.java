@@ -41,4 +41,13 @@ public class Project {
         }
         return participatedUsers.add(userProject);
     }
+
+    public List<Long> getParticipatedId() {
+        List<Long> participatedId = new ArrayList<>();
+        for (UserProject participatedUser : participatedUsers) {
+            Long id = participatedUser.getUser().getId();
+            participatedId.add(id);
+        }
+        return participatedId;
+    }
 }

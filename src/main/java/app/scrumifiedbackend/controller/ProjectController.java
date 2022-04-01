@@ -18,17 +18,18 @@ public class ProjectController {
 
     @GetMapping("/projects/{projectId}")
     public EntityModel<ProjectDto> getProject(@PathVariable("projectId") Long id) {
-        return null;
+        return projectDtoEntityAssembler.toModel(projectService.findOne(id));
     }
 
     @PutMapping("/projects/{projectId}")
     public EntityModel<ProjectDto> updateProject(@PathVariable("projectId") Long id, @RequestBody ProjectDto projectDto) {
-        return null;
+        ProjectDto updateProject = projectService.update(id, projectDto);
+        return projectDtoEntityAssembler.toModel(updateProject);
     }
 
     @DeleteMapping("/projects/{projectId}")
     public void deleteProject(@PathVariable("projectId") Long id) {
-
+        projectService.delete(id);
     }
 
     @PostMapping("/projects/{projectId}/stories")

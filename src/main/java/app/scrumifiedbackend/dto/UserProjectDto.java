@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class UserProjectDto {
-    private List<Project> ownedProjects;
-    private List<Project> participatedProjects;
+    private List<ProjectDto> ownedProjects;
+    private List<ProjectDto> participatedProjects;
 }

@@ -1,5 +1,6 @@
 package app.scrumifiedbackend.service.implementation;
 
+import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.UserDto;
 import app.scrumifiedbackend.dto.UserProjectDto;
 import app.scrumifiedbackend.entity.Project;
@@ -100,8 +101,23 @@ public class UserServiceImpl implements UserService {
         List<Project> ownedProject = user.getOwnedProjects();
         List<Project> participateProject = user.getParticipatedProjects();
         UserProjectDto userProjectDto = new UserProjectDto();
-        userProjectDto.setOwnedProjects(ownedProject);
-        userProjectDto.setParticipatedProjects(participateProject);
+
+        List<ProjectDto> ownedProjectDto = new ArrayList<>();
+        for (Project project : ownedProject) {
+            ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
+            projectDto.setOwnerId(project.getOwner().getId());
+            projectDto.setParticipantsId(project.getParticipatedId());
+            ownedProjectDto.add(projectDto);
+        }
+        List<ProjectDto> participateProjectDto = new ArrayList<>();
+        for (Project project : participateProject) {
+            ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
+            projectDto.setOwnerId(project.getOwner().getId());
+            projectDto.setParticipantsId(project.getParticipatedId());
+            participateProjectDto.add(projectDto);
+        }
+        userProjectDto.setOwnedProjects(ownedProjectDto);
+        userProjectDto.setParticipatedProjects(participateProjectDto);
         return userProjectDto;
     }
 

@@ -47,6 +47,11 @@ public class UserController {
         return userDtoEntityAssembler.toModel(userDto);
     }
 
+    @GetMapping("/users/{userId}")
+    public EntityModel<UserDto> getUser(@PathVariable("userId") Long id) {
+        return userDtoEntityAssembler.toModel(userService.findOne(id));
+    }
+
     @PutMapping("/users/{userId}")
     public EntityModel<UserDto> updateUser(@PathVariable("userId") Long id, @RequestBody UserDto userDto) {
         UserDto updateUser = userService.update(id, userDto);
@@ -56,11 +61,6 @@ public class UserController {
     @DeleteMapping("/users/{userId}")
     public void deleteUser(@PathVariable("userId") Long id) {
         userService.delete(id);
-    }
-
-    @GetMapping("/users/{userId}")
-    public EntityModel<UserDto> getUser(@PathVariable("userId") Long id) {
-        return userDtoEntityAssembler.toModel(userService.findOne(id));
     }
 
     @GetMapping("/users")
