@@ -1,9 +1,12 @@
 package app.scrumifiedbackend.controller;
 
 import app.scrumifiedbackend.assembler.ProjectDtoEntityAssembler;
+import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.StoryDto;
+import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
+import app.scrumifiedbackend.service.interface_service.StoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
     private ProjectService projectService;
     private ProjectDtoEntityAssembler projectDtoEntityAssembler;
+    private StoryService storyService;
+    private StoryDtoEntityAssembler storyDtoEntityAssembler;
 
     @GetMapping("/projects/{projectId}")
     public EntityModel<ProjectDto> getProject(@PathVariable("projectId") Long id) {
@@ -34,7 +39,9 @@ public class ProjectController {
 
     @PostMapping("/projects/{projectId}/stories")
     public EntityModel<StoryDto> createStory(@PathVariable("projectId") Long id, @RequestBody StoryDto storyDto) {
-        return null;
+        storyDto.setProjectId(id);
+        StoryDto createdStoryDto = storyService.create(storyDto);
+        return storyDtoEntityAssembler.toModel(createdStoryDto);
     }
 
     @GetMapping("/projects/{projectId}/stories")

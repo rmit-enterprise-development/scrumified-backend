@@ -1,13 +1,16 @@
 package app.scrumifiedbackend.service.implementation;
 
 import app.scrumifiedbackend.dto.StoryDto;
+import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
+import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.repository.UserRepo;
 import app.scrumifiedbackend.service.interface_service.StoryService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class StoryServiceImpl implements StoryService {
     private StoryRepo storyRepo;
+    private ProjectRepo projectRepo;
+    private UserRepo userRepo;
 
     private ModelMapper modelMapper;
 
-    private UserRepo userRepo;
+
 
     @Override
     public List<StoryDto> findAll() {
@@ -37,8 +43,11 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public StoryDto create(StoryDto input) {
         Story story = modelMapper.map(input, Story.class);
-        story = save(story);
-        return modelMapper.map(story, StoryDto.class);
+        Project project = projectRepo.getById(input.getProjectId());
+        story.setProject(project);
+        story = storyRepo.save(story);
+        input.setId(story.getId());
+        return input;
     }
 
 
@@ -77,11 +86,19 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private Story getByStoryId(Long id) {
-        return storyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Story ID" + id + "not found"));
+        try {
+            return storyRepo.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotSaveException(e.getMessage());
+        }
     }
 
     private User getById(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ID" + id + "not found"));
+        try {
+            return userRepo.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotSaveException(e.getMessage());
+        }
     }
 
     private List<Story> getAll() {

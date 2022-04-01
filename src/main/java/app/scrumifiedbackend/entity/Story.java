@@ -38,4 +38,5 @@ public class Story {
     @JoinColumn(name = "assignee")
     @JsonBackReference
     private User assignee;
+
 }

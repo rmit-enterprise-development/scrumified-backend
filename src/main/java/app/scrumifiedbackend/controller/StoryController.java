@@ -20,21 +20,12 @@ public class StoryController {
 
     @GetMapping("/stories/{storyId}")
     public EntityModel<StoryDto> getStory (@PathVariable("storyId") Long id) {
-        StoryDto storyDto = storyService.findOne(id);
-        return storyDtoEntityAssembler.toModel(storyDto);
+        return storyDtoEntityAssembler.toModel(storyService.findOne(id));
     }
-
-    /*
-        updateStory in case that the service is used to convert data from dto to entity form
-     */
 
     @PutMapping("/stories/{storyId}")
     public EntityModel<StoryDto> updateStory (@PathVariable("storyId") Long id, @RequestBody StoryDto storyDto) {
-        StoryDto updateStoryDto = storyService.findOne(id);
-        if(updateStoryDto.getId().equals(storyDto.getId()) && !updateStoryDto.equals(storyDto)) {
-            updateStoryDto = storyService.update(id, storyDto);
-        }
-
+        StoryDto updateStoryDto = storyService.update(id, storyDto);
         return storyDtoEntityAssembler.toModel(updateStoryDto);
     }
 
