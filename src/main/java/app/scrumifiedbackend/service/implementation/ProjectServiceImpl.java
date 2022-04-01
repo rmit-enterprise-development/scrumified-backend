@@ -5,6 +5,7 @@ import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.entity.UserProject;
 import app.scrumifiedbackend.entity.UserProjectKey;
+import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.UserProjectRepo;
@@ -72,7 +73,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private Project getById(Long id) {
-        return projectRepo.getById(id);
+        try {
+            return projectRepo.getById(id);
+        } catch (RuntimeException e) {
+            throw new EntityNotFoundException(e.getMessage());
+        }
     }
 
     private Project save(Project project) {
