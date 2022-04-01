@@ -9,6 +9,7 @@ import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.repository.UserRepo;
 import app.scrumifiedbackend.service.interface_service.StoryService;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;

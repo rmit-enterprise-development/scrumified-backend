@@ -9,6 +9,7 @@ import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.UserRepo;
 import app.scrumifiedbackend.service.interface_service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
