@@ -22,6 +22,11 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
     private ModelMapper modelMapper;
 
+    public UserServiceImpl(UserRepo userRepo, ModelMapper modelMapper) {
+        this.userRepo = userRepo;
+        this.modelMapper = modelMapper;
+    }
+
     @Override
     public List<UserDto> findAll() {
         List<User> users = getAll();
