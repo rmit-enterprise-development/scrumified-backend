@@ -18,7 +18,6 @@ public class ProjectDto {
     private String createdDate;
     private Long ownerId;
     private List<Long> participantsId;
-//    private List<Story> createdStories;
 
     public Boolean addParticipantId(Long id) {
         if (participantsId == null) {
@@ -26,11 +25,4 @@ public class ProjectDto {
         }
         return participantsId.add(id);
     }
-
-//    public Boolean addStory(Story story) {
-//        if (createdStories.isEmpty()) {
-//            createdStories = new ArrayList<>();
-//        }
-//        return createdStories.add(story);
-//    }
 }

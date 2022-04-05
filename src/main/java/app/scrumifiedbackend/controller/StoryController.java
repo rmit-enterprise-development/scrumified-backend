@@ -38,6 +38,4 @@ public class StoryController {
         StoryDto updateStoryDto = storyService.update(id, storyDto);
         return storyDtoEntityAssembler.toModel(updateStoryDto);
     }
-
-
 }

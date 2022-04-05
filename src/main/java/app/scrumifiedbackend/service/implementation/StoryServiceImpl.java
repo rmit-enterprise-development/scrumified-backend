@@ -34,7 +34,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDto> findAll() {
         List<Story> stories = getAll();
-        return convertToDo(stories);
+        return convertToDto(stories);
     }
 
     @Override
@@ -89,11 +89,22 @@ public class StoryServiceImpl implements StoryService {
         storyRepo.delete(story);
     }
 
+    @Override
+    public List<StoryDto> findAllStoriesBelongToProject(Long id) {
+        List<StoryDto> storyDtoList = new ArrayList<>();
+        for (Story story : getAll()) {
+            if (story.getProject().getId() == id) {
+                storyDtoList.add(returnDto(story));
+            }
+        }
+        return storyDtoList;
+    }
+
     private Story getByStoryId(Long id) {
         try {
             return storyRepo.getById(id);
         } catch (EntityNotFoundException e) {
-            throw new EntityNotSaveException(e.getMessage());
+            throw new EntityNotSaveException("Story ID " + id + "is not found");
         }
     }
 
@@ -101,7 +112,7 @@ public class StoryServiceImpl implements StoryService {
         try {
             return userRepo.getById(id);
         } catch (EntityNotFoundException e) {
-            throw new EntityNotSaveException(e.getMessage());
+            throw new EntityNotSaveException("User ID " + id + "is not found");
         }
     }
 
@@ -117,7 +128,7 @@ public class StoryServiceImpl implements StoryService {
         }
     }
 
-    private List<StoryDto> convertToDo (List<Story> stories) {
+    private List<StoryDto> convertToDto (List<Story> stories) {
         List<StoryDto> storyDtoList = new ArrayList<>();
 
         for (Story story : stories) {

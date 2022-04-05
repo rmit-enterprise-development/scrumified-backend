@@ -5,11 +5,15 @@ import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.StoryDto;
 import app.scrumifiedbackend.repository.ProjectRepo;
+import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
 import app.scrumifiedbackend.service.interface_service.StoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -45,7 +49,8 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/{projectId}/stories")
-    public EntityModel<ProjectDto> getAllStories(@PathVariable("projectId") Long id) {
-        return null;
+    public CollectionModel<EntityModel<StoryDto>> getAllStories(@PathVariable("projectId") Long id) {
+        List<StoryDto> allStories = storyService.findAllStoriesBelongToProject(id);
+        return storyDtoEntityAssembler.toCollectionModel(allStories);
     }
 }
