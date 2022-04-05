@@ -13,11 +13,16 @@ import app.scrumifiedbackend.service.interface_service.StoryService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@RestController
+@RequestMapping
+@CrossOrigin
 @AllArgsConstructor
 public class StoryServiceImpl implements StoryService {
     private StoryRepo storyRepo;
@@ -25,8 +30,6 @@ public class StoryServiceImpl implements StoryService {
     private UserRepo userRepo;
 
     private ModelMapper modelMapper;
-
-
 
     @Override
     public List<StoryDto> findAll() {
@@ -37,7 +40,10 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public StoryDto findOne(Long id) {
         Story story = getByStoryId(id);
-        return modelMapper.map(story, StoryDto.class);
+        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
+        storyDto.setProjectId(story.getProject().getId());
+        storyDto.setAssignId(story.getAssignee().getId());
+        return storyDto;
     }
 
     @Override
@@ -45,11 +51,11 @@ public class StoryServiceImpl implements StoryService {
         Story story = modelMapper.map(input, Story.class);
         Project project = projectRepo.getById(input.getProjectId());
         story.setProject(project);
+        story.setAssignee(userRepo.getById(input.getAssignId()));
         story = storyRepo.save(story);
         input.setId(story.getId());
         return input;
     }
-
 
     @Override
     public StoryDto update(Long id, StoryDto input) {
@@ -76,7 +82,11 @@ public class StoryServiceImpl implements StoryService {
         }
 
         story = save(story);
-        return modelMapper.map(story, StoryDto.class);
+
+        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
+        storyDto.setProjectId(story.getProject().getId());
+        storyDto.setAssignId(story.getAssignee().getId());
+        return storyDto;
     }
 
     @Override
@@ -122,4 +132,11 @@ public class StoryServiceImpl implements StoryService {
 
         return storyDtoList;
     }
+//
+//    private StoryDto returnDto (Story story) {
+//        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
+//        storyDto.setProjectId(story.getProject().getId());
+//        storyDto.setAssignId(story.getAssignee().getId());
+//        return storyDto;
+//    }
 }

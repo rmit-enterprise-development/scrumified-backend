@@ -2,11 +2,20 @@ package app.scrumifiedbackend.controller;
 
 import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.StoryDto;
+import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.StoryService;
+import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
+@RestController
+@RequestMapping
+@CrossOrigin
+@AllArgsConstructor
 public class StoryController {
 
     private StoryService storyService;
@@ -20,7 +29,8 @@ public class StoryController {
 
     @GetMapping("/stories/{storyId}")
     public EntityModel<StoryDto> getStory (@PathVariable("storyId") Long id) {
-        return storyDtoEntityAssembler.toModel(storyService.findOne(id));
+        StoryDto storyDto = storyService.findOne(id);
+        return storyDtoEntityAssembler.toModel(storyDto);
     }
 
     @PutMapping("/stories/{storyId}")

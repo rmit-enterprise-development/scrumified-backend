@@ -1,5 +1,6 @@
 package app.scrumifiedbackend.dto;
 
+import app.scrumifiedbackend.repository.StoryRepo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

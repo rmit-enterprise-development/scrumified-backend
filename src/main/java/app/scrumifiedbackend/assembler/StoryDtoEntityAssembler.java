@@ -18,18 +18,10 @@ public class StoryDtoEntityAssembler implements RepresentationModelAssembler<Sto
     @Override
     public EntityModel<StoryDto> toModel (StoryDto entity) {
         return EntityModel.of(entity);
-//        Long id = entity.getId();
-//        return EntityModel.of(entity,
-//                linkTo(methodOn(StoryController.class).getStory(id)).withSelfRel(),
-//                linkTo(methodOn(StoryController.class).updateStory(id, null)).withRel("stories"),
-//                linkTo(methodOn(ProjectController.class).createStory(entity.getProjectId(), null)).withRel("stories")
-//        );
     }
 
     @Override
     public CollectionModel<EntityModel<StoryDto>> toCollectionModel (Iterable<? extends StoryDto> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities);
     }
-
-
 }
