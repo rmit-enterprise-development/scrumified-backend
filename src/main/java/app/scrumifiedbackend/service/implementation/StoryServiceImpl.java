@@ -40,10 +40,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public StoryDto findOne(Long id) {
         Story story = getByStoryId(id);
-        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
-        storyDto.setProjectId(story.getProject().getId());
-        storyDto.setAssignId(story.getAssignee().getId());
-        return storyDto;
+        return returnDto(story);
     }
 
     @Override
@@ -83,10 +80,7 @@ public class StoryServiceImpl implements StoryService {
 
         story = save(story);
 
-        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
-        storyDto.setProjectId(story.getProject().getId());
-        storyDto.setAssignId(story.getAssignee().getId());
-        return storyDto;
+        return returnDto(story);
     }
 
     @Override
@@ -127,16 +121,16 @@ public class StoryServiceImpl implements StoryService {
         List<StoryDto> storyDtoList = new ArrayList<>();
 
         for (Story story : stories) {
-            storyDtoList.add(modelMapper.map(story, StoryDto.class));
+            storyDtoList.add(returnDto(story));
         }
 
         return storyDtoList;
     }
-//
-//    private StoryDto returnDto (Story story) {
-//        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
-//        storyDto.setProjectId(story.getProject().getId());
-//        storyDto.setAssignId(story.getAssignee().getId());
-//        return storyDto;
-//    }
+
+    private StoryDto returnDto (Story story) {
+        StoryDto storyDto = modelMapper.map(story, StoryDto.class);
+        storyDto.setProjectId(story.getProject().getId());
+        storyDto.setAssignId(story.getAssignee().getId());
+        return storyDto;
+    }
 }
