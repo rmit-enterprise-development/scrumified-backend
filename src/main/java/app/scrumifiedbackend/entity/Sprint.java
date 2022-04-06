@@ -1,5 +1,6 @@
 package app.scrumifiedbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,15 @@ public class Sprint {
 
     @Column(name = "def_of_done")
     private String defOfDone;
+
+    @Column(name = "start_date")
+    private String startDate;
+
+    @Column(name = "end_date")
+    private String endDate;
+
+    @ManyToOne()
+    @JoinColumn(name = "project")
+    @JsonBackReference(value = "project-sprint")
+    private Project project;
 }

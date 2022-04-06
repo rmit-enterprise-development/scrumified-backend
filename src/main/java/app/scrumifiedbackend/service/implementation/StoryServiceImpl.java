@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping
@@ -93,7 +94,7 @@ public class StoryServiceImpl implements StoryService {
     public List<StoryDto> findAllStoriesBelongToProject(Long id) {
         List<StoryDto> storyDtoList = new ArrayList<>();
         for (Story story : getAll()) {
-            if (story.getProject().getId() == id) {
+            if (Objects.equals(story.getProject().getId(), id)) {
                 storyDtoList.add(returnDto(story));
             }
         }
