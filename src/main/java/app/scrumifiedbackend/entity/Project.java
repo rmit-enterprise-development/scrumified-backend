@@ -50,4 +50,10 @@ public class Project {
         }
         return participatedId;
     }
+
+    @OneToMany(
+            mappedBy = "id"
+    )
+    @JsonManagedReference(value = "project-sprint")
+    private List<Sprint> sprints;
 }
