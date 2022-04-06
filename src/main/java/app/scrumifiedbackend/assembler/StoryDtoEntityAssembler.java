@@ -1,6 +1,5 @@
 package app.scrumifiedbackend.assembler;
 
-import app.scrumifiedbackend.controller.ProjectController;
 import app.scrumifiedbackend.controller.StoryController;
 import app.scrumifiedbackend.dto.StoryDto;
 import org.springframework.hateoas.CollectionModel;

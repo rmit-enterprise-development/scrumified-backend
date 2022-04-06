@@ -4,8 +4,6 @@ import app.scrumifiedbackend.assembler.ProjectDtoEntityAssembler;
 import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.StoryDto;
-import app.scrumifiedbackend.repository.ProjectRepo;
-import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
 import app.scrumifiedbackend.service.interface_service.StoryService;
 import lombok.AllArgsConstructor;
