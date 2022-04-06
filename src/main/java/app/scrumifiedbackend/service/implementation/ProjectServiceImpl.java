@@ -34,6 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDto findOne(Long id) {
         Project project = getById(id);
+        System.out.println(project);
         return modelMapper.map(project, ProjectDto.class);
     }
 
@@ -73,11 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private Project getById(Long id) {
-        try {
-            return projectRepo.getById(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException(e.getMessage());
-        }
+        return projectRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Project ID " + id + " not exist"));
     }
 
     private Project save(Project project) {

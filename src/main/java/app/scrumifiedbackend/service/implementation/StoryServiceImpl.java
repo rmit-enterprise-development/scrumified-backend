@@ -101,19 +101,11 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private Story getByStoryId(Long id) {
-        try {
-            return storyRepo.getById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotSaveException("Story ID " + id + "is not found");
-        }
+        return storyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Story ID " + id + " not exist"));
     }
 
     private User getById(Long id) {
-        try {
-            return userRepo.getById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotSaveException("User ID " + id + "is not found");
-        }
+        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User ID " + id + " not exist"));
     }
 
     private List<Story> getAll() {
