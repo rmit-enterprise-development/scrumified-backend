@@ -10,4 +10,10 @@ public interface StoryRepo extends JpaRepository<Story, Long> {
 
     @Query("select story from Story story where story.project.id = ?1")
     List<Story> findAllBelongToProject(Long id);
+
+    @Query("select sum(story.point) from Story story where story.project.id = ?1")
+    Long getAllPoints(Long projectId);
+
+    @Query("select sum(story.point) from Story story where story.project.id = ?1 and story.status = ?2")
+    Long getAllPointsByStatus(Long projectId, String status);
 }
