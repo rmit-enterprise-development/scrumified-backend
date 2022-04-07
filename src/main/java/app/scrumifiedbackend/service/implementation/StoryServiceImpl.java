@@ -93,10 +93,9 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDto> findAllStoriesBelongToProject(Long id) {
         List<StoryDto> storyDtoList = new ArrayList<>();
-        for (Story story : getAll()) {
-            if (Objects.equals(story.getProject().getId(), id)) {
-                storyDtoList.add(returnDto(story));
-            }
+        List<Story> storyList = storyRepo.findAllBelongToProject(id);
+        for (Story story : storyList) {
+            storyDtoList.add(modelMapper.map(story, StoryDto.class));
         }
         return storyDtoList;
     }
