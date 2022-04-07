@@ -43,8 +43,7 @@ public class SprintController {
 
     @DeleteMapping("/sprints/{sprintId}/stories")
     public EntityModel<SprintDto> removeStoryOutOfSprint(@RequestParam(name = "id") Long storyId, @PathVariable("sprintId") Long sprintId) {
-        Story story = new Story();
-        SprintDto sprintDto = sprintService.removeStoryOutOfSprint(story, sprintId);
+        SprintDto sprintDto = sprintService.removeStoryOutOfSprint(storyId, sprintId);
         return sprintDtoEntityAssembler.toModel(sprintDto);
     }
 }

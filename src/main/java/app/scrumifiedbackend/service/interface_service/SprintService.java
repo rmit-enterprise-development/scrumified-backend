@@ -11,6 +11,6 @@ public interface SprintService extends Service<SprintDto> {
 
     SprintDto appendStoryIntoSprint(Long storyId, Long sprintId);
 
-    SprintDto removeStoryOutOfSprint(Story story, Long sprintId);
+    SprintDto removeStoryOutOfSprint(Long storyId, Long sprintId);
 
 }

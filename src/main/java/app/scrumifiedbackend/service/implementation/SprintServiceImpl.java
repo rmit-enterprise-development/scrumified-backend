@@ -131,8 +131,12 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public SprintDto removeStoryOutOfSprint(Story story, Long sprintId) {
-        return null;
+    public SprintDto removeStoryOutOfSprint(Long storyId, Long sprintId) {
+        Story story = storyRepo.getById(storyId);
+        Sprint sprint = getBySprintId(sprintId);
+        story.setSprint(null);
+        sprint.removeStory(story);
+        sprint = save(sprint);
+        return modelMapper.map(sprint, SprintDto.class);
     }
-
 }
