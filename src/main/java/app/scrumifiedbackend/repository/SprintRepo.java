@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SprintRepo extends JpaRepository<Sprint, Long> {
-    @Query("select sprint from Sprint sprint where sprint.project = ?1")
+    @Query("select sprint from Sprint sprint where sprint.project.id = ?1")
     List<Sprint> findAllBelongTo(Long projectId);
 }

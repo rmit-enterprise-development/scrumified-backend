@@ -1,28 +1,21 @@
 package app.scrumifiedbackend.config;
 
 import app.scrumifiedbackend.dto.ProjectDto;
+import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.dto.StoryDto;
-import app.scrumifiedbackend.dto.UserDto;
 import app.scrumifiedbackend.entity.Project;
+import app.scrumifiedbackend.entity.Sprint;
 import app.scrumifiedbackend.entity.Story;
-import app.scrumifiedbackend.entity.User;
-import app.scrumifiedbackend.repository.ProjectRepo;
-import app.scrumifiedbackend.repository.UserRepo;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Configuration
+@AllArgsConstructor
 public class ModelMapperConfig {
-    private UserRepo userRepo;
-    private ProjectRepo projectRepo;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -32,9 +25,8 @@ public class ModelMapperConfig {
                 .setSkipNullEnabled(true);
 
         modelMapper.addMappings(configMapProjectToProjectDto());
-        modelMapper.addMappings(configMapProjectDtoToProject());
         modelMapper.addMappings(configMapStoryToStoryDto());
-        modelMapper.addMappings(configMapStoryDtoToStory());
+        modelMapper.addMappings(configMapSprintToSprintDto());
         return modelMapper;
     }
 
@@ -44,16 +36,6 @@ public class ModelMapperConfig {
             protected void configure() {
                 map().setOwnerId(source.getOwner().getId());
                 map().setParticipantsId(source.getParticipatedId());
-            }
-        };
-    }
-
-    PropertyMap<ProjectDto, Project> configMapProjectDtoToProject() {
-        return new PropertyMap<>() {
-            @Override
-            protected void configure() {
-                map().setOwner(userRepo.getById(source.getOwnerId()));
-                map().setParticipatedUsers(source.getParticipant());
             }
         };
     }
@@ -68,12 +50,11 @@ public class ModelMapperConfig {
         };
     }
 
-    PropertyMap<StoryDto, Story> configMapStoryDtoToStory() {
-        return new PropertyMap<>() {
+    PropertyMap<Sprint, SprintDto> configMapSprintToSprintDto() {
+        return new PropertyMap<Sprint, SprintDto>() {
             @Override
             protected void configure() {
-                map().setProject(projectRepo.getById(source.getProjectId()));
-                map().setAssignee(userRepo.getById(source.getAssignId()));
+                map().setProjectId(source.getId());
             }
         };
     }

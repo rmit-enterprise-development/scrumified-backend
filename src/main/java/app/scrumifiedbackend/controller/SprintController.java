@@ -22,7 +22,9 @@ public class SprintController {
 
     @PutMapping("/sprints/{sprintId}")
     public EntityModel<SprintDto> updateSprint(@PathVariable("sprintId") Long id, @RequestBody SprintDto sprintDto) {
+        System.out.println("A");
         SprintDto updatedSprint = sprintService.update(id, sprintDto);
+        System.out.println(updatedSprint);
         return sprintDtoEntityAssembler.toModel(updatedSprint);
     }
 

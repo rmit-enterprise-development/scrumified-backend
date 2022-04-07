@@ -4,6 +4,7 @@ import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.Sprint;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
+import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.SprintRepo;
 import app.scrumifiedbackend.service.interface_service.SprintService;
@@ -67,7 +68,37 @@ public class SprintServiceImpl implements SprintService {
 
     @Override
     public SprintDto update(Long id, SprintDto input) {
-        return null;
+        Sprint sprint = getBySprintId(id);
+
+        if (input.getGoal() != null && !input.getGoal().equals(sprint.getGoal())) {
+            sprint.setGoal(input.getGoal());
+        }
+
+        if (input.getDefOfDone() != null && !input.getDefOfDone().equals(sprint.getDefOfDone())) {
+            sprint.setDefOfDone(input.getDefOfDone());
+        }
+
+        if (input.getStatus() != null && !input.getStatus().equals(sprint.getStatus())) {
+            sprint.setStatus(input.getStatus());
+        }
+
+        if (input.getStatus() != null && !input.getStartDate().equals(sprint.getStartDate())) {
+            sprint.setStartDate(input.getStartDate());
+        }
+
+        if (input.getEndDate() != null && !input.getEndDate().equals(sprint.getEndDate())) {
+            sprint.setEndDate(input.getEndDate());
+        }
+        sprint = save(sprint);
+        return modelMapper.map(sprint, SprintDto.class);
+    }
+
+    private Sprint save(Sprint sprint) {
+        try {
+            return sprintRepo.save(sprint);
+        } catch (RuntimeException e) {
+            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
+        }
     }
 
     @Override

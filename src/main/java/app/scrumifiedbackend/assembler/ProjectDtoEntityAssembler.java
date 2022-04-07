@@ -21,9 +21,17 @@ public class ProjectDtoEntityAssembler implements RepresentationModelAssembler<P
                                 afford(methodOn(ProjectController.class).updateProject(entity.getId(), null))
                         )
                 ),
-                linkTo(methodOn(ProjectController.class).createStory(entity.getId(), null)).withRel("story"),
-                linkTo(methodOn(ProjectController.class).getAllStories(entity.getId())).withRel("stories")
-        );
+                linkTo(methodOn(ProjectController.class).createStory(entity.getId(), null)).withRel("stories").andAffordances(
+                        Arrays.asList(
+                                afford(methodOn(ProjectController.class).getAllStories(entity.getId()))
+                        )
+                ),
+                linkTo(methodOn(ProjectController.class).createSprint(entity.getId(), null)).withRel("sprints").andAffordances(
+                        Arrays.asList(
+                                afford(methodOn(ProjectController.class).getAllSprints(entity.getId())
+                                )
+                        )
+                ));
     }
 
     @Override
