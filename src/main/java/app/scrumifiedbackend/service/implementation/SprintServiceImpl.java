@@ -3,10 +3,12 @@ package app.scrumifiedbackend.service.implementation;
 import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.Sprint;
+import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
 import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.SprintRepo;
+import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.SprintService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,7 @@ public class SprintServiceImpl implements SprintService {
     private ModelMapper modelMapper;
     private ProjectRepo projectRepo;
     private SprintRepo sprintRepo;
+    private StoryRepo storyRepo;
 
     @Override
     public List<SprintDto> findAll() {
@@ -115,5 +118,25 @@ public class SprintServiceImpl implements SprintService {
             sprintDtoList.add(modelMapper.map(sprint, SprintDto.class));
         }
         return sprintDtoList;
+    }
+
+    @Override
+    public SprintDto appendStoryIntoSprint(Long storyId, Long sprintId) {
+        Story story = storyRepo.getById(storyId);
+        Sprint sprint = getBySprintId(sprintId);
+        story.setSprint(sprint);
+        sprint.appendStory(story);
+        sprint = save(sprint);
+        return modelMapper.map(sprint, SprintDto.class);
+    }
+
+    @Override
+    public SprintDto removeStoryOutOfSprint(Long storyId, Long sprintId) {
+        Story story = storyRepo.getById(storyId);
+        Sprint sprint = getBySprintId(sprintId);
+        story.setSprint(null);
+        sprint.removeStory(story);
+        sprint = save(sprint);
+        return modelMapper.map(sprint, SprintDto.class);
     }
 }
