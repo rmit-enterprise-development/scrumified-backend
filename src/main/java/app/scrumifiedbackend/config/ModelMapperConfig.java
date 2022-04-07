@@ -1,11 +1,7 @@
 package app.scrumifiedbackend.config;
 
-import app.scrumifiedbackend.dto.ProjectDto;
-import app.scrumifiedbackend.dto.SprintDto;
-import app.scrumifiedbackend.dto.StoryDto;
-import app.scrumifiedbackend.entity.Project;
-import app.scrumifiedbackend.entity.Sprint;
-import app.scrumifiedbackend.entity.Story;
+import app.scrumifiedbackend.dto.*;
+import app.scrumifiedbackend.entity.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -16,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AllArgsConstructor
 public class ModelMapperConfig {
-
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
