@@ -38,4 +38,9 @@ public class Story {
     @JoinColumn(name = "assignee")
     @JsonBackReference
     private User assignee;
+
+    @ManyToOne
+    @JoinColumn(name = "sprint")
+    @JsonBackReference(value = "sprint-story")
+    private Sprint sprint;
 }
