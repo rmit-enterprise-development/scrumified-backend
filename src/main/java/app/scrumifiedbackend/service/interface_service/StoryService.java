@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface StoryService extends Service<StoryDto> {
     List<StoryDto> findAllStoriesBelongToProject (Long id);
+
+    List<StoryDto> findAllStoriesBelongToSprint (Long id);
 }

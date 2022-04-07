@@ -100,6 +100,16 @@ public class StoryServiceImpl implements StoryService {
         return storyDtoList;
     }
 
+    @Override
+    public List<StoryDto> findAllStoriesBelongToSprint(Long id) {
+        List<StoryDto> storyDtoList = new ArrayList<>();
+        List<Story> storyList = storyRepo.findAllBelongToSprint(id);
+        for (Story story : storyList) {
+            storyDtoList.add(modelMapper.map(story, StoryDto.class));
+        }
+        return storyDtoList;
+    }
+
     private Story getByStoryId(Long id) {
         return storyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Story ID " + id + " not exist"));
     }
