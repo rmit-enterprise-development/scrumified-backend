@@ -34,7 +34,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDto findOne(Long id) {
         Project project = getById(id);
-        System.out.println(project);
         return modelMapper.map(project, ProjectDto.class);
     }
 
@@ -83,6 +82,21 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (RuntimeException e) {
             throw new EntityNotSaveException(e.getCause().getCause().getMessage());
         }
+    }
+
+    @Override
+    public ProjectDto findProjectWithPoints(Long projectId) {
+        Project project = getById(projectId);
+        Long totalPoints = projectRepo.getAllPoints(projectId);
+        Long todoPoints = projectRepo.getAllPointsByStatus(projectId, "todo");
+        Long inProcessPoints = projectRepo.getAllPointsByStatus(projectId, "in process");
+        Long donePoints = projectRepo.getAllPointsByStatus(projectId, "done");
+        ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
+        projectDto.setTotalPoints(totalPoints);
+        projectDto.setTodoPoints(todoPoints);
+        projectDto.setInProgressPoints(inProcessPoints);
+        projectDto.setDonePoints(donePoints);
+        return projectDto;
     }
 
     @Override

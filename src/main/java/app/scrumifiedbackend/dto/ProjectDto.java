@@ -22,6 +22,10 @@ public class ProjectDto {
     private String createdDate;
     private Long ownerId;
     private List<Long> participantsId;
+    private Long totalPoints;
+    private Long todoPoints;
+    private Long inProgressPoints;
+    private Long donePoints;
 
     public Boolean addParticipantId(Long id) {
         if (participantsId == null) {

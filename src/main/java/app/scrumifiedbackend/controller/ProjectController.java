@@ -6,7 +6,6 @@ import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.dto.StoryDto;
-import app.scrumifiedbackend.entity.Story;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
 import app.scrumifiedbackend.service.interface_service.SprintService;
 import app.scrumifiedbackend.service.interface_service.StoryService;
@@ -15,7 +14,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,7 +32,11 @@ public class ProjectController {
 
     @GetMapping("/projects/{projectId}")
     public EntityModel<ProjectDto> getProject(@PathVariable("projectId") Long id, @RequestParam(name = "getPoints") Boolean requiredPoints) {
-        return projectDtoEntityAssembler.toModel(projectService.findOne(id));
+        if (requiredPoints) {
+            return projectDtoEntityAssembler.toModel(projectService.findProjectWithPoints(id));
+        } else {
+            return projectDtoEntityAssembler.toModel(projectService.findOne(id));
+        }
     }
 
     @PutMapping("/projects/{projectId}")
@@ -74,32 +76,8 @@ public class ProjectController {
         return sprintDtoEntityAssembler.toCollectionModel(sprintDtoList);
     }
 
-//    @GetMapping("/projects/{projectId}")
-//    public Long totalPointsOfProject(@PathVariable("projectId") Long id) {
-//        return projectService.pointsOfProject(id);
-//    }
-
     @GetMapping("/projects/{projectId}/status")
     public Long totalPointsOfProjectByStatus(@PathVariable("projectId") Long id, @PathVariable("status") String status) {
         return projectService.pointsOfProjectByStatus(id, status);
     }
-
-//    @GetMapping("/projects/{projectId}")
-//    public List<Long> pointsAllStatus(@PathVariable("projectId") Long id) {
-//        List<StoryDto> storyDtoList = storyService.findAllStoriesBelongToProject(id);
-//        List<String> status = new ArrayList<>();
-//        List<Long> statusPoint = new ArrayList<>();
-//
-//        for (StoryDto storyDto : storyDtoList) {
-//            if (!status.contains(storyDto.getStatus())) {
-//                status.add(storyDto.getStatus());
-//            }
-//        }
-//
-//        for (String s : status) {
-//            statusPoint.add(totalPointsOfProjectByStatus(id, s));
-//        }
-//
-//        return statusPoint;
-//    }
 }

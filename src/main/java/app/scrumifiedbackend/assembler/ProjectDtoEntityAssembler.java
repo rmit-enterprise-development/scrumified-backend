@@ -16,7 +16,7 @@ public class ProjectDtoEntityAssembler implements RepresentationModelAssembler<P
     @Override
     public EntityModel<ProjectDto> toModel(ProjectDto entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(ProjectController.class).getProject(entity.getId())).withSelfRel().andAffordances(
+                linkTo(methodOn(ProjectController.class).getProject(entity.getId(), true)).withSelfRel().andAffordances(
                         Arrays.asList(
                                 afford(methodOn(ProjectController.class).updateProject(entity.getId(), null))
                         )
