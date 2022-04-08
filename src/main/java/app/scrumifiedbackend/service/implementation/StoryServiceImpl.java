@@ -93,7 +93,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDto> findAllStoriesBelongToProject(Long id) {
         List<StoryDto> storyDtoList = new ArrayList<>();
-        List<Story> storyList = storyRepo.findAllBelongToProject(id);
+        List<Story> storyList = storyRepo.findAllByProjectId(id);
         for (Story story : storyList) {
             storyDtoList.add(modelMapper.map(story, StoryDto.class));
         }
@@ -103,7 +103,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDto> findAllStoriesBelongToSprint(Long id) {
         List<StoryDto> storyDtoList = new ArrayList<>();
-        List<Story> storyList = storyRepo.findAllBelongToSprint(id);
+        List<Story> storyList = storyRepo.findAllBySprintId(id);
         for (Story story : storyList) {
             storyDtoList.add(modelMapper.map(story, StoryDto.class));
         }
