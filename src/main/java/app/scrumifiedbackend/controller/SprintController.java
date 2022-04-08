@@ -53,9 +53,9 @@ public class SprintController {
         return sprintDtoEntityAssembler.toModel(sprintDto);
     }
 
-    @GetMapping("/sprints/{sprintId}")
-    public CollectionModel<EntityModel<StoryDto>> getAllStories (@PathVariable("sprintId") Long id) {
-        List<StoryDto> storyDtoList = storyService.findAllStoriesBelongToSprint(id);
-        return storyDtoEntityAssembler.toCollectionModel(storyDtoList);
-    }
+//    @GetMapping("/sprints/{sprintId}")
+//    public CollectionModel<EntityModel<StoryDto>> getAllStories (@PathVariable("sprintId") Long id) {
+//        List<StoryDto> storyDtoList = storyService.findAllStoriesBelongToSprint(id);
+//        return storyDtoEntityAssembler.toCollectionModel(storyDtoList);
+//    }
 }

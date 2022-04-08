@@ -13,4 +13,8 @@ public interface SprintService extends Service<SprintDto> {
 
     SprintDto removeStoryOutOfSprint(Long storyId, Long sprintId);
 
+    Long pointsOfSprint(Long sprintId);
+
+    Long pointsOfSprintByStatus(Long sprintId, String status);
+
 }

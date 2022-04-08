@@ -139,4 +139,14 @@ public class SprintServiceImpl implements SprintService {
         sprint = save(sprint);
         return modelMapper.map(sprint, SprintDto.class);
     }
+
+    @Override
+    public Long pointsOfSprint(Long sprintId) {
+        return sprintRepo.getAllPoints(sprintId);
+    }
+
+    @Override
+    public Long pointsOfSprintByStatus(Long sprintId, String status) {
+        return sprintRepo.getAllPointsByStatus(sprintId, status);
+    }
 }

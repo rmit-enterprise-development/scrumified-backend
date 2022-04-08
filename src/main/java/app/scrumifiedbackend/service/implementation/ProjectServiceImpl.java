@@ -85,4 +85,23 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
+    @Override
+    public Long pointsOfProject(Long projectId) {
+        return projectRepo.getAllPoints(projectId);
+    }
+
+    @Override
+    public Long pointsOfProjectByStatus(Long projectId, String status) {
+        return projectRepo.getAllPointsByStatus(projectId, status);
+    }
+
+    @Override
+    public Long pointsOfUser(Long projectId, Long userId) {
+        return projectRepo.getAllPointsForUser(projectId, userId);
+    }
+
+    @Override
+    public Long pointsOfUserByStatus(Long projectId, Long userId, String status) {
+        return projectRepo.getAllPointsForUserByStatus(projectId, userId, status);
+    }
 }
