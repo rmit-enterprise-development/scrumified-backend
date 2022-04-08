@@ -1,17 +1,16 @@
 package app.scrumifiedbackend.config;
 
-import app.scrumifiedbackend.dto.ProjectDto;
-import app.scrumifiedbackend.dto.UserDto;
-import app.scrumifiedbackend.entity.Project;
-import app.scrumifiedbackend.entity.User;
+import app.scrumifiedbackend.dto.*;
+import app.scrumifiedbackend.entity.*;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@AllArgsConstructor
 public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
@@ -21,6 +20,8 @@ public class ModelMapperConfig {
                 .setSkipNullEnabled(true);
 
         modelMapper.addMappings(configMapProjectToProjectDto());
+        modelMapper.addMappings(configMapStoryToStoryDto());
+        modelMapper.addMappings(configMapSprintToSprintDto());
         return modelMapper;
     }
 
@@ -33,4 +34,23 @@ public class ModelMapperConfig {
             }
         };
     }
+
+    PropertyMap<Story, StoryDto> configMapStoryToStoryDto() {
+        return new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                map().setProjectId(source.getProject().getId());
+                map().setAssignId(source.getAssignee().getId());
+            }
+        };
     }
+
+    PropertyMap<Sprint, SprintDto> configMapSprintToSprintDto() {
+        return new PropertyMap<Sprint, SprintDto>() {
+            @Override
+            protected void configure() {
+                map().setProjectId(source.getId());
+            }
+        };
+    }
+}

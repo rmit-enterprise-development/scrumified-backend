@@ -73,11 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private Project getById(Long id) {
-        try {
-            return projectRepo.getById(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException(e.getMessage());
-        }
+        return projectRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Project ID " + id + " not exist"));
     }
 
     private Project save(Project project) {
@@ -88,4 +84,38 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
+    @Override
+    public ProjectDto findProjectWithPoints(Long projectId) {
+        Project project = getById(projectId);
+        Long totalPoints = projectRepo.getAllPoints(projectId);
+        Long todoPoints = projectRepo.getAllPointsByStatus(projectId, "todo");
+        Long inProcessPoints = projectRepo.getAllPointsByStatus(projectId, "in process");
+        Long donePoints = projectRepo.getAllPointsByStatus(projectId, "done");
+        ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
+        projectDto.setTotalPoints(totalPoints);
+        projectDto.setTodoPoints(todoPoints);
+        projectDto.setInProgressPoints(inProcessPoints);
+        projectDto.setDonePoints(donePoints);
+        return projectDto;
+    }
+
+    @Override
+    public Long pointsOfProject(Long projectId) {
+        return projectRepo.getAllPoints(projectId);
+    }
+
+    @Override
+    public Long pointsOfProjectByStatus(Long projectId, String status) {
+        return projectRepo.getAllPointsByStatus(projectId, status);
+    }
+
+    @Override
+    public Long pointsOfUser(Long projectId, Long userId) {
+        return projectRepo.getAllPointsForUser(projectId, userId);
+    }
+
+    @Override
+    public Long pointsOfUserByStatus(Long projectId, Long userId, String status) {
+        return projectRepo.getAllPointsForUserByStatus(projectId, userId, status);
+    }
 }

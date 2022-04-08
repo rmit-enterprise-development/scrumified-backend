@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getById(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ID " + id + " not exist"));
+        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User ID " + id + " not exist"));
     }
 
     private List<User> getAll() {
