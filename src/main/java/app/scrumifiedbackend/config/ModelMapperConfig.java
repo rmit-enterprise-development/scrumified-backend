@@ -26,7 +26,7 @@ public class ModelMapperConfig {
     }
 
     PropertyMap<Project, ProjectDto> configMapProjectToProjectDto() {
-        return new PropertyMap<>() {
+        return new PropertyMap<Project, ProjectDto>() {
             @Override
             protected void configure() {
                 map().setOwnerId(source.getOwner().getId());
@@ -36,7 +36,7 @@ public class ModelMapperConfig {
     }
 
     PropertyMap<Story, StoryDto> configMapStoryToStoryDto() {
-        return new PropertyMap<>() {
+        return new PropertyMap<Story, StoryDto>() {
             @Override
             protected void configure() {
                 map().setProjectId(source.getProject().getId());

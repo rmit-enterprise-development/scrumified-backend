@@ -12,10 +12,7 @@ import app.scrumifiedbackend.service.interface_service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -79,16 +76,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Boolean> isValidUser(String email, String password) {
         Map<String, Boolean> map = new HashMap<>();
-        userRepo.findByEmail(email).ifPresentOrElse((user) -> {
+        Optional<User> optional = userRepo.findByEmail(email);
+        if (optional.isPresent()) {
+            User user = optional.get();
             if (user.getPassword().equals(password)) {
                 map.put("email", true);
                 map.put("password", true);
             } else {
                 map.put("password", false);
             }
-        }, () -> {
+        } else {
             map.put("email", false);
-        });
+        }
         return map;
     }
 
