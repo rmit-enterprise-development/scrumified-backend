@@ -6,9 +6,17 @@ import app.scrumifiedbackend.assembler.StoryDtoEntityAssembler;
 import app.scrumifiedbackend.dto.ProjectDto;
 import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.dto.StoryDto;
+import app.scrumifiedbackend.dto.UserDto;
 import app.scrumifiedbackend.service.interface_service.ProjectService;
 import app.scrumifiedbackend.service.interface_service.SprintService;
 import app.scrumifiedbackend.service.interface_service.StoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -16,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Project")
 @RestController
 @RequestMapping
 @CrossOrigin
@@ -30,6 +39,8 @@ public class ProjectController {
     private SprintService sprintService;
     private SprintDtoEntityAssembler sprintDtoEntityAssembler;
 
+    @Operation(summary = "This is to fetch all the projects in the database")
+    @ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProjectDto.class))))
     @GetMapping("/projects/{projectId}")
     public EntityModel<ProjectDto> getProject(@PathVariable("projectId") Long id, @RequestParam(name = "getPoints") Boolean requiredPoints) {
         if (requiredPoints) {
