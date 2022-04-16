@@ -29,6 +29,9 @@ public class Story {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "position")
+    private Integer position;
+
     @ManyToOne()
     @JoinColumn(name = "project")
     @JsonBackReference

@@ -47,6 +47,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public StoryDto create(StoryDto input) {
         Story story = modelMapper.map(input, Story.class);
+        story.setStatus("backlog");
         Project project = projectRepo.getById(input.getProjectId());
         story.setProject(project);
         story.setAssignee(userRepo.getById(input.getAssignId()));

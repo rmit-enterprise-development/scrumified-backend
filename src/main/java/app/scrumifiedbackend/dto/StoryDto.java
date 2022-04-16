@@ -14,6 +14,7 @@ public class StoryDto {
     private String category;
     private Integer point;
     private String status;
+    private Integer position;
     private Long projectId;
     private Long assignId;
 }
