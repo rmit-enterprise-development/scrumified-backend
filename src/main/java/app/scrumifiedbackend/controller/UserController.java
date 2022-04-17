@@ -34,7 +34,7 @@ public class UserController {
         return userDtoEntityAssembler.toModel(createdUser);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public EntityModel<UserDto> authenticateUser(@RequestBody UserDto userDto) {
         Map<String, Boolean> map = userService.isValidUser(userDto.getEmail(), userDto.getPassword());
         userDto.setIsSuccess(true);
