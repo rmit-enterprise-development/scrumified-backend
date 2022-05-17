@@ -1,14 +1,11 @@
 package app.scrumifiedbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "sprints")
@@ -30,31 +27,14 @@ public class Sprint {
     private String defOfDone;
 
     @Column(name = "start_date")
-    private String startDate;
+    private Long startDate;
 
     @Column(name = "end_date")
-    private String endDate;
+    private Long endDate;
 
     @ManyToOne()
     @JoinColumn(name = "project")
     @JsonBackReference(value = "project-sprint")
     private Project project;
-
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.PERSIST)
-    @JsonManagedReference(value = "sprint-story")
-    private List<Story> storyList;
-
-    public Boolean appendStory(Story story) {
-        if (storyList == null) {
-            storyList = new ArrayList<>();
-        }
-        return storyList.add(story);
-    }
-
-    public Boolean removeStory(Story story) {
-        if (storyList == null) {
-            return false;
-        }
-        return storyList.remove(story);
-    }
 }
+

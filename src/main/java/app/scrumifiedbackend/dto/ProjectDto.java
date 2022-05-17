@@ -1,58 +1,58 @@
 package app.scrumifiedbackend.dto;
 
-import app.scrumifiedbackend.entity.Project;
+import app.scrumifiedbackend.mapping.ModelMapperSingleton;
 import app.scrumifiedbackend.entity.User;
-import app.scrumifiedbackend.entity.UserProject;
-import app.scrumifiedbackend.repository.ProjectRepo;
-import app.scrumifiedbackend.repository.UserProjectRepo;
-import app.scrumifiedbackend.repository.UserRepo;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFilter;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
-@Getter
-@Setter
+@JsonFilter(value = "projectFilter")
 public class ProjectDto {
     private Long id;
     private String title;
-    private String createdDate;
+    private Long createdDate;
     private Long ownerId;
     private List<Long> participantsId;
+
+    private UserDto owner;
+    private List<UserDto> participants;
+
     private Long totalPoints;
     private Long todoPoints;
     private Long inProgressPoints;
     private Long donePoints;
 
-    public Boolean addParticipantId(Long id) {
-        if (participantsId == null) {
-            participantsId = new ArrayList<>();
-        }
-        return participantsId.add(id);
+    public void toOwnerDto(User user) {
+        setOwner(ModelMapperSingleton.modelMapper.map(user, UserDto.class));
     }
 
-    // bug
-//    public List<UserProject> getParticipant() {
-//        ProjectRepo projectRepo = null;
-//        UserRepo userRepo = null;
-//        List<Long> participants = projectRepo.getById(id).getParticipatedId();
-//        List<UserProject> participantUsers = new ArrayList<>();
-//
-//        for (Long UserId : participants) {
-//            UserProject userProject = null;
-//            User user = userRepo.getById(UserId);
-//            Project project = projectRepo.getById(id);
-//
-//            userProject.setUser(user);
-//            userProject.setProject(project);
-//
-//            participantUsers.add(userProject);
-//        }
-//
-//        return participantUsers;
-//    }
+    public void toParticipantsDto(List<User> users) {
+        for (User user : users) {
+            addParticipants(ModelMapperSingleton.modelMapper.map(user, UserDto.class));
+        }
+    }
+
+    public void addParticipants(UserDto userDto) {
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
+        participants.add(userDto);
+    }
+
+    private static final List<String> params = Arrays.asList(
+            "id", "title", "createdDate",
+            "ownerId", "participantsId",
+            "owner", "participants",
+            "totalPoints", "todoPoints",
+            "inProgressPoints", "donePoints"
+    );
+
+    public static Set<String> getFilter(String... exceptElement) {
+        Set<String> result = new HashSet<>(params);
+        Arrays.asList(exceptElement).forEach(result::remove);
+        return result;
+    }
 
 }

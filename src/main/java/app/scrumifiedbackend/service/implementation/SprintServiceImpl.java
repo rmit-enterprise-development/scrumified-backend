@@ -1,17 +1,19 @@
 package app.scrumifiedbackend.service.implementation;
 
+import app.scrumifiedbackend.dto.PaginationDto;
 import app.scrumifiedbackend.dto.SprintDto;
 import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.Sprint;
-import app.scrumifiedbackend.entity.Story;
+import app.scrumifiedbackend.entity.SprintStat;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
+import app.scrumifiedbackend.mapping.ModelMapperSingleton;
 import app.scrumifiedbackend.repository.ProjectRepo;
 import app.scrumifiedbackend.repository.SprintRepo;
-import app.scrumifiedbackend.repository.StoryRepo;
 import app.scrumifiedbackend.service.interface_service.SprintService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,38 +22,41 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class SprintServiceImpl implements SprintService {
-    private ModelMapper modelMapper;
     private ProjectRepo projectRepo;
     private SprintRepo sprintRepo;
-    private StoryRepo storyRepo;
-
-    @Override
-    public List<SprintDto> findAll() {
-        List<Sprint> sprints = getAll();
-        return convertToDto(sprints);
-    }
 
     private List<SprintDto> convertToDto(List<Sprint> sprints) {
         List<SprintDto> sprintDtoList = new ArrayList<>();
         for (Sprint sprint : sprints) {
-            sprintDtoList.add(modelMapper.map(sprint, SprintDto.class));
+            sprintDtoList.add(ModelMapperSingleton.modelMapper.map(sprint, SprintDto.class));
         }
         return sprintDtoList;
     }
 
-    private List<Sprint> getAll() {
-        return sprintRepo.findAll();
+    private Sprint save(Sprint sprint) {
+        try {
+            return sprintRepo.save(sprint);
+        } catch (RuntimeException e) {
+            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
+        }
+    }
+
+    @Override
+    public PaginationDto<List<SprintDto>> findAll(String key, Pageable pageable) {
+        Page<Sprint> page = sprintRepo.findByKeyLike("%" + key + "%", pageable);
+
+        List<SprintDto> sprintDtoList = new ArrayList<>();
+        if (page.hasContent()) {
+            List<Sprint> sprints = page.getContent();
+            sprintDtoList = convertToDto(sprints);
+        }
+        return new PaginationDto<>(sprintDtoList, page.getTotalElements(), page.getTotalPages(), page.getNumber());
     }
 
     @Override
     public SprintDto findOne(Long id) {
         Sprint sprint = getBySprintId(id);
-        return returnFromDto(sprint);
-    }
-
-    private SprintDto returnFromDto(Sprint sprint) {
-        SprintDto sprintDto = modelMapper.map(sprint, SprintDto.class);
-        return sprintDto;
+        return ModelMapperSingleton.modelMapper.map(sprint, SprintDto.class);
     }
 
     private Sprint getBySprintId(Long id) {
@@ -60,11 +65,10 @@ public class SprintServiceImpl implements SprintService {
 
     @Override
     public SprintDto create(SprintDto input) {
-        Sprint sprint = modelMapper.map(input, Sprint.class);
+        Sprint sprint = ModelMapperSingleton.modelMapper.map(input, Sprint.class);
         Project project = projectRepo.getById(input.getProjectId());
         sprint.setProject(project);
         sprint = sprintRepo.save(sprint);
-        //Todo: generate relationship with the stories
         input.setId(sprint.getId());
         return input;
     }
@@ -85,7 +89,7 @@ public class SprintServiceImpl implements SprintService {
             sprint.setStatus(input.getStatus());
         }
 
-        if (input.getStatus() != null && !input.getStartDate().equals(sprint.getStartDate())) {
+        if (input.getStartDate() != null && !input.getStartDate().equals(sprint.getStartDate())) {
             sprint.setStartDate(input.getStartDate());
         }
 
@@ -93,15 +97,7 @@ public class SprintServiceImpl implements SprintService {
             sprint.setEndDate(input.getEndDate());
         }
         sprint = save(sprint);
-        return modelMapper.map(sprint, SprintDto.class);
-    }
-
-    private Sprint save(Sprint sprint) {
-        try {
-            return sprintRepo.save(sprint);
-        } catch (RuntimeException e) {
-            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
-        }
+        return ModelMapperSingleton.modelMapper.map(sprint, SprintDto.class);
     }
 
     @Override
@@ -111,42 +107,25 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public List<SprintDto> findAllSprintBelongToProject(Long id) {
+    public List<SprintDto> findAllSprintBelongToProject(Long id, boolean includePercentage) {
         List<SprintDto> sprintDtoList = new ArrayList<>();
-        List<Sprint> sprintList = sprintRepo.findAllBelongTo(id);
-        for (Sprint sprint : sprintList) {
-            sprintDtoList.add(modelMapper.map(sprint, SprintDto.class));
+        if (includePercentage) {
+            List<SprintStat> sprintStats = sprintRepo.getALlSprintsAndPercentage(id);
+            for (SprintStat sprintStat : sprintStats) {
+                sprintDtoList.add(ModelMapperSingleton.modelMapper.map(sprintStat, SprintDto.class));
+            }
+        } else {
+            List<Sprint> sprintList = sprintRepo.findAllBelongTo(id);
+            for (Sprint sprint : sprintList) {
+                sprintDtoList.add(ModelMapperSingleton.modelMapper.map(sprint, SprintDto.class));
+            }
         }
         return sprintDtoList;
     }
 
     @Override
-    public SprintDto appendStoryIntoSprint(Long storyId, Long sprintId) {
-        Story story = storyRepo.getById(storyId);
-        Sprint sprint = getBySprintId(sprintId);
-        story.setSprint(sprint);
-        sprint.appendStory(story);
-        sprint = save(sprint);
-        return modelMapper.map(sprint, SprintDto.class);
-    }
-
-    @Override
-    public SprintDto removeStoryOutOfSprint(Long storyId, Long sprintId) {
-        Story story = storyRepo.getById(storyId);
-        Sprint sprint = getBySprintId(sprintId);
-        story.setSprint(null);
-        sprint.removeStory(story);
-        sprint = save(sprint);
-        return modelMapper.map(sprint, SprintDto.class);
-    }
-
-    @Override
-    public Long pointsOfSprint(Long sprintId) {
-        return sprintRepo.getAllPoints(sprintId);
-    }
-
-    @Override
-    public Long pointsOfSprintByStatus(Long sprintId, String status) {
-        return sprintRepo.getAllPointsByStatus(sprintId, status);
+    public SprintDto getCurrentSprint(Long projectId) {
+        Sprint sprint = sprintRepo.findByProjectIdAndStatusNotLike(projectId, "%done%");
+        return sprint == null ? null : ModelMapperSingleton.modelMapper.map(sprint, SprintDto.class);
     }
 }

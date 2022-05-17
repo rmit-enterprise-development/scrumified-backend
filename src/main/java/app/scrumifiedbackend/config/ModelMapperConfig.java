@@ -2,17 +2,12 @@ package app.scrumifiedbackend.config;
 
 import app.scrumifiedbackend.dto.*;
 import app.scrumifiedbackend.entity.*;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.servers.Server;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Arrays;
 
 @Configuration
 @AllArgsConstructor
@@ -36,6 +31,8 @@ public class ModelMapperConfig {
             protected void configure() {
                 map().setOwnerId(source.getOwner().getId());
                 map().setParticipantsId(source.getParticipatedId());
+                map().toOwnerDto(source.getOwner());
+                map().toParticipantsDto(source.getParticipant());
             }
         };
     }
@@ -46,6 +43,9 @@ public class ModelMapperConfig {
             protected void configure() {
                 map().setProjectId(source.getProject().getId());
                 map().setAssignId(source.getAssignee().getId());
+                map().setParentStoryId(source.getParentStory().getId());
+                map().setChildStoryId(source.getChildStory().getId());
+                map().setSprintId(source.getSprint().getId());
             }
         };
     }

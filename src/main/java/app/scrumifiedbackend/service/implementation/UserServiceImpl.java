@@ -1,46 +1,75 @@
 package app.scrumifiedbackend.service.implementation;
 
-import app.scrumifiedbackend.dto.ProjectDto;
+import app.scrumifiedbackend.dto.PaginationDto;
 import app.scrumifiedbackend.dto.UserDto;
-import app.scrumifiedbackend.dto.UserProjectDto;
-import app.scrumifiedbackend.entity.Project;
 import app.scrumifiedbackend.entity.User;
 import app.scrumifiedbackend.exception.EntityNotFoundException;
 import app.scrumifiedbackend.exception.EntityNotSaveException;
+import app.scrumifiedbackend.mapping.ModelMapperSingleton;
 import app.scrumifiedbackend.repository.UserRepo;
 import app.scrumifiedbackend.service.interface_service.UserService;
-import org.modelmapper.ModelMapper;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
-    private ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRepo userRepo, ModelMapper modelMapper) {
-        this.userRepo = userRepo;
-        this.modelMapper = modelMapper;
+    private List<UserDto> convertToDto(List<User> users) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : users) {
+            userDtoList.add(ModelMapperSingleton.modelMapper.map(user, UserDto.class));
+        }
+        return userDtoList;
+    }
+
+    private User getById(Long id) {
+        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User ID " + id + " not exist"));
+    }
+
+    private Page<User> getAll(String key, Pageable pageable) {
+        return userRepo.findAll("%" + key + "%", pageable);
+    }
+
+    private User save(User user) {
+        try {
+            return userRepo.save(user);
+        } catch (RuntimeException e) {
+            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
+        }
+    }
+
+    private PaginationDto<List<UserDto>> getListPaginationDto(Page<User> page) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        if (page.hasContent()) {
+            List<User> users = page.getContent();
+            userDtoList = convertToDto(users);
+        }
+        return new PaginationDto<>(userDtoList, page.getTotalElements(), page.getTotalPages(), page.getNumber());
     }
 
     @Override
-    public List<UserDto> findAll() {
-        List<User> users = getAll();
-        return convertToDto(users);
+    public PaginationDto<List<UserDto>> findAll(String key, Pageable pageable) {
+        Page<User> page = getAll(key, pageable);
+        return getListPaginationDto(page);
     }
 
     @Override
     public UserDto findOne(Long id) {
         User user = getById(id);
-        return modelMapper.map(user, UserDto.class);
+        return ModelMapperSingleton.modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto create(UserDto input) {
-        User user = modelMapper.map(input, User.class);
+        User user = ModelMapperSingleton.modelMapper.map(input, User.class);
         user = save(user);
-        return modelMapper.map(user, UserDto.class);
+        return ModelMapperSingleton.modelMapper.map(user, UserDto.class);
     }
 
     @Override
@@ -63,8 +92,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(input.getPassword());
         }
 
+        if (input.getDescription() != null && !input.getDescription().equals(user.getDescription())) {
+            user.setDescription(input.getDescription());
+        }
+
         user = save(user);
-        return modelMapper.map(user, UserDto.class);
+        return ModelMapperSingleton.modelMapper.map(user, UserDto.class);
     }
 
     @Override
@@ -74,76 +107,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Boolean> isValidUser(String email, String password) {
-        Map<String, Boolean> map = new HashMap<>();
+    public UserDto isValidUser(String email, String password) {
+        UserDto userDto = null;
         Optional<User> optional = userRepo.findByEmail(email);
         if (optional.isPresent()) {
             User user = optional.get();
+            userDto = ModelMapperSingleton.modelMapper.map(user, UserDto.class);
             if (user.getPassword().equals(password)) {
-                map.put("email", true);
-                map.put("password", true);
+                userDto.setIsSuccess(true);
             } else {
-                map.put("password", false);
+                userDto.setIsSuccess(false);
+                userDto.addErrorTarget("password");
             }
         } else {
-            map.put("email", false);
+            userDto = new UserDto();
+            userDto.setIsSuccess(false);
+            userDto.setErrorTarget(Arrays.asList("email", "password"));
         }
-        return map;
+        return userDto;
     }
 
     @Override
-    public List<UserDto> findAllExceptOne(Long id) {
-        List<User> users = userRepo.findAllExceptOne(id);
-        return convertToDto(users);
-    }
-
-    @Override
-    public UserProjectDto findAllProjectBelongTo(Long id) {
-        User user = userRepo.getById(id);
-        List<Project> ownedProject = user.getOwnedProjects();
-        List<Project> participateProject = user.getParticipatedProjects();
-        UserProjectDto userProjectDto = new UserProjectDto();
-
-        List<ProjectDto> ownedProjectDto = new ArrayList<>();
-        for (Project project : ownedProject) {
-            ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
-            projectDto.setOwnerId(project.getOwner().getId());
-            projectDto.setParticipantsId(project.getParticipatedId());
-            ownedProjectDto.add(projectDto);
-        }
-        List<ProjectDto> participateProjectDto = new ArrayList<>();
-        for (Project project : participateProject) {
-            ProjectDto projectDto = modelMapper.map(project, ProjectDto.class);
-            projectDto.setOwnerId(project.getOwner().getId());
-            projectDto.setParticipantsId(project.getParticipatedId());
-            participateProjectDto.add(projectDto);
-        }
-        userProjectDto.setOwnedProjects(ownedProjectDto);
-        userProjectDto.setParticipatedProjects(participateProjectDto);
-        return userProjectDto;
-    }
-
-    private User getById(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User ID " + id + " not exist"));
-    }
-
-    private List<User> getAll() {
-        return userRepo.findAll();
-    }
-
-    private User save(User user) {
-        try {
-            return userRepo.save(user);
-        } catch (RuntimeException e) {
-            throw new EntityNotSaveException(e.getCause().getCause().getMessage());
-        }
-    }
-
-    private List<UserDto> convertToDto(List<User> users) {
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : users) {
-            userDtoList.add(modelMapper.map(user, UserDto.class));
-        }
-        return userDtoList;
+    public PaginationDto<List<UserDto>> findAllExceptOne(Long id, String key, Pageable pageable) {
+        Page<User> page = userRepo.findAllExceptOne(id, key, pageable);
+        return getListPaginationDto(page);
     }
 }

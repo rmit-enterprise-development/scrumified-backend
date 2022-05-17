@@ -26,11 +26,23 @@ public class ApiExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlerEntityNotSaveException(EntityNotSaveException entityNotSaveException) {
         HttpStatus notFound = HttpStatus.BAD_REQUEST;
-        EntityException EntityException = new EntityException(
+        EntityException entityException = new EntityException(
                 entityNotSaveException.getMessage(),
                 notFound,
                 LocalDateTime.now());
 
-        return new ResponseEntity<>(EntityException, notFound);
+        return new ResponseEntity<>(entityException, notFound);
+    }
+
+    @ExceptionHandler(InvalidArgumentException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handlerInvalidArgumentException(InvalidArgumentException invalidArgumentException) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        EntityException entityException = new EntityException(
+                invalidArgumentException.getMessage(),
+                badRequest,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(entityException, badRequest);
     }
 }

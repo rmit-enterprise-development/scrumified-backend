@@ -26,11 +26,22 @@ public class Story {
     @Column(name = "category")
     private String category;
 
+    @Column(name = "created_date")
+    private Long createdDate;
+
+    @Column(name = "def_of_done")
+    private String defOfDone;
+
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "position")
-    private Integer position;
+    @OneToOne
+    @JoinColumn(name = "parent_story")
+    private Story parentStory;
+
+    @OneToOne
+    @JoinColumn(name = "child_story")
+    private Story childStory;
 
     @ManyToOne()
     @JoinColumn(name = "project")

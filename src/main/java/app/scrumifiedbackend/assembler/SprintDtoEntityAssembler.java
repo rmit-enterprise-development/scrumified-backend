@@ -7,8 +7,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
@@ -17,11 +15,8 @@ public class SprintDtoEntityAssembler implements RepresentationModelAssembler<Sp
     @Override
     public EntityModel<SprintDto> toModel(SprintDto entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(SprintController.class).getSprint(entity.getId())).withSelfRel().andAffordances(
-                        Arrays.asList(
-                                afford(methodOn(SprintController.class).updateSprint(entity.getId(), null))
-                        )
-                ));
+                linkTo(methodOn(SprintController.class).getSprint(entity.getId())).withSelfRel()
+        );
     }
 
     @Override

@@ -1,15 +1,13 @@
 package app.scrumifiedbackend.service.interface_service;
 
+import app.scrumifiedbackend.dto.PaginationDto;
 import app.scrumifiedbackend.dto.UserDto;
-import app.scrumifiedbackend.dto.UserProjectDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserService extends Service<UserDto> {
-    Map<String, Boolean> isValidUser(String email, String password);
+    UserDto isValidUser(String email, String password);
 
-    List<UserDto> findAllExceptOne(Long id);
-
-    UserProjectDto findAllProjectBelongTo(Long id);
+    PaginationDto<List<UserDto>> findAllExceptOne(Long id, String key, Pageable pageable);
 }

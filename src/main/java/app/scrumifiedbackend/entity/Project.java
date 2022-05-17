@@ -24,7 +24,7 @@ public class Project {
     private String title;
 
     @Column(name = "created_date")
-    private String createdDate;
+    private Long createdDate;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     @JsonManagedReference(value = "project-user")
@@ -35,14 +35,17 @@ public class Project {
     @JsonBackReference
     private User owner;
 
-    public Boolean addUserProject(UserProject userProject) {
+    public void addUserProject(UserProject userProject) {
         if (participatedUsers == null) {
             participatedUsers = new ArrayList<>();
         }
-        return participatedUsers.add(userProject);
+        participatedUsers.add(userProject);
     }
 
     public List<Long> getParticipatedId() {
+        if (participatedUsers == null || participatedUsers.size() == 0) {
+            return null;
+        }
         List<Long> participatedId = new ArrayList<>();
         for (UserProject participatedUser : participatedUsers) {
             Long id = participatedUser.getUser().getId();
@@ -51,9 +54,15 @@ public class Project {
         return participatedId;
     }
 
-    @OneToMany(
-            mappedBy = "id"
-    )
-    @JsonManagedReference(value = "project-sprint")
-    private List<Sprint> sprints;
+    public List<User> getParticipant() {
+        if (participatedUsers == null || participatedUsers.size() == 0) {
+            return null;
+        }
+        List<User> participates = new ArrayList<>();
+        for (UserProject participatedUser : participatedUsers) {
+            User user = participatedUser.getUser();
+            participates.add(user);
+        }
+        return participates;
+    }
 }

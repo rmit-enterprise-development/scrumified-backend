@@ -1,8 +1,11 @@
 package app.scrumifiedbackend.repository;
 
 import app.scrumifiedbackend.entity.Story;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,17 +15,107 @@ public interface StoryRepo extends JpaRepository<Story, Long> {
 
     List<Story> findAllBySprintId(Long sprintId);
 
+    List<Story> findAllBySprintIdOrderByParentStoryId(Long id);
 
-//    @Query("select sum(story.point) from Story story where story.project.id = ?1")
-//    Long getAllPoints(Long projectId);
-//
-//    @Query("select sum(story.point) from Story story where story.project.id = ?1 and story.status = ?2")
-//    Long getAllPointsByStatus(Long projectId, String status);
-//
-//    @Query("select sum(story.point) from Story story where story.project.id = ?1 and story.assignee.id = ?2")
-//    Long getAllPointsForUser(Long projectId, Long userId);
-//
-//    @Query("select sum(story.point) from Story story where story.project.id = ?1 and story.assignee.id = ?2 and story.status = ?3")
-//    Long getAllPointsForUserByStatus(Long projectId, Long userId, String status);
+    Long countStoriesByStatusLikeAndProjectIdIs(
+            @Param(value = "status") String status,
+            @Param(value = "projectId") Long projectId
+    );
 
+    Story findStoryByChildStoryIsNullAndStatusLikeAndProjectIdIs(
+            @Param(value = "status") String status,
+            @Param(value = "projectId") Long projectId
+    );
+
+    @Query(
+            value = "select * from stories story where story.assignee = :assigneeId " +
+                    "and story.user_story ~~* :userStory",
+            countQuery = "select count(*) from stories story where story.assignee = :assigneeId " +
+                    "and story.user_story ~~* :userStory",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByAssigneeIdAndUserStoryContaining(
+            @Param(value = "assigneeId") Long id,
+            @Param(value = "userStory") String key,
+            Pageable pageable
+    );
+
+    @Query(
+            value = "select * from stories story where story.assignee = :assigneeId and story.project = :projectId" +
+                    " and story.user_story ~~* :userStory",
+            countQuery = "select count(*) from stories story where story.assignee = :assigneeId and story.project = " +
+                    ":projectId and story.user_story ~~* :userStory",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByAssigneeIdAndProjectIdIsAndUserStoryContaining(
+            @Param(value = "assigneeId") Long id,
+            @Param(value = "userStory") String key, Pageable pageable,
+            @Param(value = "projectId") Long projectId
+    );
+
+    @Query(
+            value = "select * from stories story where story.user_story ~~* :userStory",
+            countQuery = "select count(*) from stories story where story.user_story ~~* :userStory",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByUserStoryContaining(@Param(value = "userStory") String key, Pageable pageable);
+
+    @Query(
+            value = "select * from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.sprint is null",
+            countQuery = "select count(*) from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.sprint is null",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByProjectIdIsAndSprintIdIsNullAndUserStoryContaining(
+            @Param(value = "projectId") Long projectId,
+            @Param(value = "userStory") String key,
+            Pageable pageable
+    );
+
+    @Query(
+            value = "select * from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.sprint is null and story.category = :category",
+            countQuery = "select count(*) from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.sprint is null and story.category = :category",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByProjectIdIsAndSprintIdIsNullAndUserStoryContainingAndCategoryLike(
+            @Param(value = "projectId") Long projectId,
+            @Param(value = "userStory") String key,
+            @Param(value = "category") String category,
+            Pageable pageable
+    );
+
+    @Query(
+            value = "select * from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId",
+            countQuery = "select count(*) from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByProjectIdIsAndUserStoryContaining(
+            @Param(value = "projectId") Long projectId,
+            @Param(value = "userStory") String key,
+            Pageable pageable
+    );
+
+    @Query(
+            value = "select * from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.category = :category",
+            countQuery = "select count(*) from stories story where story.user_story ~~* :userStory " +
+                    "and story.project = :projectId and story.category = :category",
+            nativeQuery = true
+    )
+    Page<Story> findStoriesByProjectIdIsAndUserStoryContainingAndCategoryLike(
+            @Param(value = "projectId") Long projectId,
+            @Param(value = "userStory") String key,
+            @Param(value = "category") String category,
+            Pageable pageable
+    );
+
+    List<Story> findAllByAssigneeIdIsAndProjectIdIs(
+            @Param(value = "assigneeId") Long assigneeId,
+            @Param(value = "projectId") Long projectId
+    );
 }

@@ -1,25 +1,21 @@
 package app.scrumifiedbackend.dto;
 
-import app.scrumifiedbackend.entity.Project;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
-@Getter
-@Setter
+@JsonFilter(value = "userFilter")
 public class UserDto {
     private Boolean isSuccess;
     private List<String> errorTarget;
 
-    public boolean addErrorTarget(String s) {
+    public void addErrorTarget(String s) {
         if (errorTarget == null) {
             errorTarget = new ArrayList<>();
         }
-        return errorTarget.add(s);
+        errorTarget.add(s);
     }
 
     private Long id;
@@ -27,4 +23,17 @@ public class UserDto {
     private String lastName;
     private String email;
     private String password;
+    private String description;
+
+    private static final List<String> params = Arrays.asList(
+            "id", "firstName", "lastName",
+            "email", "password", "description",
+            "isSuccess", "errorTarget"
+    );
+
+    public static Set<String> getFilter(String... exceptElement) {
+        Set<String> result = new HashSet<>(params);
+        Arrays.asList(exceptElement).forEach(result::remove);
+        return result;
+    }
 }
