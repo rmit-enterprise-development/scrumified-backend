@@ -65,3 +65,6 @@ To deploy the project, you only need to register to Heroku, and create a applica
 To make sure the project will work, you need to link project via the Heroku CLI instead of Github because there is an error up to May 18th 2022 related to github deployment.
 Furthermore, the design of the Back-end application also prevent the cold call in the server where it will take a long time for the server to response if there is no recent activity.
 We try to do so by providing a schedule call by the server to itself in a constant interval.
+
+[Enterprise Diagram - Class Diagram.pdf](https://github.com/rmit-enterprise-development/scrumified-backend/files/8710530/Enterprise.Diagram.-.Class.Diagram.pdf)
+
