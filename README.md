@@ -1,8 +1,5 @@
 # scrumified-backend
 
-khi call API xuống nó vô trình tự page nào
-Rồi deploy script như nào
-
 ## Setup
 To setup the project, you need to have the following requirement;
 - Heroku (responsible for hosting server and database)
