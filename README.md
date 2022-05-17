@@ -66,5 +66,7 @@ To make sure the project will work, you need to link project via the Heroku CLI 
 Furthermore, the design of the Back-end application also prevent the cold call in the server where it will take a long time for the server to response if there is no recent activity.
 We try to do so by providing a schedule call by the server to itself in a constant interval.
 
+
+## Class diagram
 [Enterprise Diagram - Class Diagram.pdf](https://github.com/rmit-enterprise-development/scrumified-backend/files/8710530/Enterprise.Diagram.-.Class.Diagram.pdf)
 
