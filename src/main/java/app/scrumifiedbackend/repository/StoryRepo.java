@@ -29,27 +29,29 @@ public interface StoryRepo extends JpaRepository<Story, Long> {
 
     @Query(
             value = "select * from stories story where story.assignee = :assigneeId " +
-                    "and story.user_story ~~* :userStory",
+                    "and story.user_story ~~* :userStory and story.status not like :exceptStatus",
             countQuery = "select count(*) from stories story where story.assignee = :assigneeId " +
-                    "and story.user_story ~~* :userStory",
+                    "and story.user_story ~~* :userStory and story.status not like :exceptStatus",
             nativeQuery = true
     )
     Page<Story> findStoriesByAssigneeIdAndUserStoryContaining(
             @Param(value = "assigneeId") Long id,
             @Param(value = "userStory") String key,
+            @Param(value = "exceptStatus") String exceptStatus,
             Pageable pageable
     );
 
     @Query(
             value = "select * from stories story where story.assignee = :assigneeId and story.project = :projectId" +
-                    " and story.user_story ~~* :userStory",
+                    " and story.user_story ~~* :userStory and story.status not like :exceptStatus",
             countQuery = "select count(*) from stories story where story.assignee = :assigneeId and story.project = " +
-                    ":projectId and story.user_story ~~* :userStory",
+                    ":projectId and story.user_story ~~* :userStory and story.status not like :exceptStatus",
             nativeQuery = true
     )
     Page<Story> findStoriesByAssigneeIdAndProjectIdIsAndUserStoryContaining(
             @Param(value = "assigneeId") Long id,
             @Param(value = "userStory") String key, Pageable pageable,
+            @Param(value = "exceptStatus") String exceptStatus,
             @Param(value = "projectId") Long projectId
     );
 

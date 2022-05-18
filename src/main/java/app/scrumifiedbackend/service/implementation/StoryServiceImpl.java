@@ -170,13 +170,13 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public PaginationDto<List<StoryDto>> findStoriesBelongToUserAndProject(Long id, String key, Pageable pageable, Long projectId) {
+    public PaginationDto<List<StoryDto>> findStoriesBelongToUserAndProject(Long id, String key, Pageable pageable, Long projectId, String exceptStatus) {
         Page<Story> page;
         if (projectId == null) {
-            page = storyRepo.findStoriesByAssigneeIdAndUserStoryContaining(id, "%" + key + "%", pageable);
+            page = storyRepo.findStoriesByAssigneeIdAndUserStoryContaining(id, "%" + key + "%", exceptStatus, pageable);
         } else {
             page = storyRepo.findStoriesByAssigneeIdAndProjectIdIsAndUserStoryContaining(
-                    id, "%" + key + "%", pageable, projectId
+                    id, "%" + key + "%", pageable, exceptStatus, projectId
             );
         }
         return getListPaginationDto(page);

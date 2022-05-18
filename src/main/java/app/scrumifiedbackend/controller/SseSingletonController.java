@@ -30,6 +30,7 @@ public class SseSingletonController {
                 emitters.get(i).send(SseEmitter.event().id(String.valueOf(id)).name(event).data(true));
                 emitters.get(i).complete();
             } catch (IOException e) {
+                System.out.println("Cannot be updated");
                 emitters.remove(emitters.get(i));
             }
         }
@@ -40,11 +41,12 @@ public class SseSingletonController {
             @RequestHeader(name = "Last-Event-ID", required = false) String lastId,
             @RequestParam(name = "projectId") Long projectId
     ) {
-        SseEmitter sseEmitter = new SseEmitter();
+        SseEmitter sseEmitter = new SseEmitter(15_000L);
         try {
             sseEmitter.send(SseEmitter.event().name("received").data(true));
         } catch (IOException e) {
-            throw new RuntimeException("Ditme");
+            System.out.println("Cannot be handle");
+            throw new RuntimeException("Cannot be handle");
         }
 
         if (!emitterMap.containsKey(projectId)) {
@@ -54,11 +56,12 @@ public class SseSingletonController {
         sseEmitter.onCompletion(() -> emitterMap.get(projectId).remove(sseEmitter));
         sseEmitter.onTimeout(() -> emitterMap.get(projectId).remove(sseEmitter));
         if (lastId != null) {
-            if (Long.parseLong(lastId) < id) {
+            if (Long.parseLong(lastId) != id) {
                 try {
                     sseEmitter.send(SseEmitter.event().id(String.valueOf(++id)).name("update").data(lastId + " " + id.toString()));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Cannot be refresh");
+                    emitterMap.get(projectId).remove(sseEmitter);
                 }
             }
         }

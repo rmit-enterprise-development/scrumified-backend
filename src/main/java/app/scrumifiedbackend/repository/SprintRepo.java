@@ -25,13 +25,15 @@ public interface SprintRepo extends JpaRepository<Sprint, Long> {
             value = "select sprints.id, sprints.goal, sprints.status, sprints.def_of_done as defOfDone, " +
                     "sprints.start_date as startDate, sprints.end_date as endDate, sprints.project as projectId, " +
                     "((select coalesce(SUM(story.points), 0) from stories story " +
-                    "where story.sprint = sprints.id and story.status like '%done%') * 100 / " +
+                    "where story.sprint = sprints.id and " +
+                    "(story.status like '%done%' or story.status like '%completed%')) * 100 / " +
                     "(select SUM(story.points) from stories story where story.sprint = sprints.id)) " +
                     "as completePercentage " +
                     "from sprints where sprints.project = :projectId",
             nativeQuery = true
     )
     List<SprintStat> getALlSprintsAndPercentage(@Param(value = "projectId") Long projectId);
+
 
     @Query(
             value = "select * from sprints sprint where sprint.goal ~~* :key",

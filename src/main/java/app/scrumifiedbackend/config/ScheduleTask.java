@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduleTask {
-    @Scheduled(fixedRate = 60_000)
+    @Scheduled(fixedRate = 999_999_999)
     public void wakeUp() {
         System.out.println("Wake up");
     }

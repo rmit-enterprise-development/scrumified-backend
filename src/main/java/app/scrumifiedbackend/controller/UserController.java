@@ -162,14 +162,18 @@ public class UserController {
             @RequestParam(name = "limit", defaultValue = "4", required = false) int limit,
             @RequestParam(name = "sortProp", defaultValue = "id", required = false) String sortProp,
             @RequestParam(name = "ascending", defaultValue = "false", required = false) boolean isAscending,
-            @RequestParam(name = "projectId", required = false) Long projectId
+            @RequestParam(name = "projectId", required = false) Long projectId,
+            @RequestParam(name = "exceptStatus", defaultValue = "", required = false) String exceptStatus
     ) {
 
         Pageable pageable = isAscending ?
                 PageRequest.of(page, limit, Sort.by(sortProp).ascending()) :
                 PageRequest.of(page, limit, Sort.by(sortProp).descending());
 
-        PaginationDto<List<StoryDto>> paginationDto = storyService.findStoriesBelongToUserAndProject(id, key, pageable, projectId);
+        PaginationDto<List<StoryDto>> paginationDto = storyService
+                .findStoriesBelongToUserAndProject(
+                        id, key, pageable, projectId, exceptStatus
+                );
         PaginationDto<CollectionModel<EntityModel<StoryDto>>> resultPaginationDto = new PaginationDto<>(
                 storyDtoEntityAssembler.toCollectionModel(paginationDto.getEntity()),
                 paginationDto.getTotalElements(),

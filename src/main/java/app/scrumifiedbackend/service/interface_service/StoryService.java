@@ -10,7 +10,7 @@ public interface StoryService extends Service<StoryDto> {
 
     List<StoryDto> findAllStoriesBelongToSprint (Long id);
 
-    PaginationDto<List<StoryDto>> findStoriesBelongToUserAndProject(Long id, String key, Pageable pageable, Long projectId);
+    PaginationDto<List<StoryDto>> findStoriesBelongToUserAndProject(Long id, String key, Pageable pageable, Long projectId, String exceptStatus);
 
     StoryDto dragUpdate(Long id, StoryDto storyDto, Boolean isTopDown);
 
